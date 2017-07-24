@@ -1,0 +1,24 @@
+{
+  "name": "document-management-api",
+  "version": "1.0.0",
+  "description": "an api for document management system",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tolupatrick004/document-management-api.git"
+  },
+  "author": "Duyile Tolulope Patrick",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tolupatrick004/document-management-api/issues"
+  },
+  "homepage": "https://github.com/tolupatrick004/document-management-api#readme",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "express": "^4.15.3",
+    "morgan": "^1.8.2"
+  }
+}
