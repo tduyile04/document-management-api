@@ -28,6 +28,7 @@ module.exports = function (app) {
 
   router.post('/users', _users2.default.signUp);
   router.post('/users/login', _users2.default.logIn);
+  router.post('/users/logout', _users2.default.logout);
 
   //Authentication middleware
   router.use(_authenticate2.default.authenticate);

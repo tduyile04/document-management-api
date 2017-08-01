@@ -1,9 +1,6 @@
 'use strict';
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-var Constants = exports.Constants = {
+module.exports = {
   REGULAR: 1,
   ADMIN: 2,
   SUPERADMIN: 3,

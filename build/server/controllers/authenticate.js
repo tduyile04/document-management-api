@@ -10,6 +10,10 @@ var _jsonwebtoken = require('jsonwebtoken');
 
 var _jsonwebtoken2 = _interopRequireDefault(_jsonwebtoken);
 
+var _localStorage = require('local-storage');
+
+var _localStorage2 = _interopRequireDefault(_localStorage);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -22,7 +26,7 @@ var Authentication = function () {
   _createClass(Authentication, null, [{
     key: 'authenticate',
     value: function authenticate(req, res, next) {
-      var token = req.body.token || req.params.token || req.headers['x-access-token'];
+      var token = req.body.token || req.headers['x-access-token'] || req.headerlocalStorage.get('token');
       if (token) {
         _jsonwebtoken2.default.verify(token, 'zabuzatovadase', function (error, decoded) {
           if (error) {

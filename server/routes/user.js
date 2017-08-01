@@ -16,6 +16,7 @@ module.exports = (app) => {
 
   router.post('/users', userController.signUp);
   router.post('/users/login', userController.logIn);
+  router.post('/users/logout', userController.logout);
 
   //Authentication middleware
   router.use(authenticateController.authenticate)

@@ -1,4 +1,4 @@
-export const Constants = {
+module.exports = {
   REGULAR: 1,
   ADMIN: 2,
   SUPERADMIN: 3,

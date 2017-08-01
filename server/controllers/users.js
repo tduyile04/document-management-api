@@ -1,12 +1,12 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import localStorage from 'local-storage';
 import Validation from '../utils/validation';
 import Constants from '../constants/index';
+import Pagination from '../utils/pagination';
 
 const User = require('../models/').User;
 const Document = require('../models/').Document;
-
-
 
 /**
  * Handles all the functionality for the user instances
@@ -55,6 +55,7 @@ class UsersController {
       }, 'zabuzatovadase', {
         expiresIn: '24h'
       });
+      localStorage.set('token', token);
       return res.status(200).json({
         success: true,
         message: 'You have signed up successfully',
@@ -94,6 +95,7 @@ class UsersController {
         }, 'zabuzatovadase', {
           expiresIn: '24h'
         });
+        localStorage.set('token', token);
         res.status(200).json({ user, token });
       } else {
         res.status(400).json({ message: 'Invalid Password' });
@@ -120,27 +122,24 @@ class UsersController {
       const selectedUsersList = [];
       const offset = req.query.offset || 0,
             limit = req.query.limit || max;
-      return User.findAll({ offset, limit })
+      return User.findAndCountAll({ offset, limit })
       .then((users) => {
-        if(users.length === 0) {
+        if(users.rows.length === 0) {
           res.status(500).json({ message: 'No users available for the page selected' });
         } else {
-          if (users.length === 1) {
-            res.status(200).json({
-              userName: users.name,
-              userEmail: users.email,
-              userRole: users.roleId
+          const totalUsersCount = users.count;
+					const pageSize = Pagination.getPageSize(limit, offset);
+					const pageCount = Pagination.getPageCount(totalUsersCount, limit);
+					const currentPage = Pagination.getCurrentPage(totalUsersCount, limit, offset);
+					const pageDetails = { totalUsersCount, pageSize, pageCount, currentPage };
+          users.rows.forEach((user) => {
+            selectedUsersList.push({
+              userName: user.name,
+              userEmail: user.email,
+              userRole: user.roleId
             });
-          } else {
-            users.forEach((user) => {
-              selectedUsersList.push({
-                userName: user.name,
-                userEmail: user.email,
-                userRole: user.roleId
-              });
-            });
-            res.status(200).json(selectedUsersList);
-          }
+          });
+          res.status(200).json({ selectedUsersList, pageDetails });
         }
       });
     }
@@ -306,6 +305,19 @@ class UsersController {
         res.status(400).json({ message: 'You do not have admin privledges to view this user document' });
       }
     });
+  }
+
+  /**
+   * Removes the token from the local storage hence ending its session
+   * abruptly
+   * @static
+   * @param {any} req request made from the client
+   * @param {any} res response from the server
+   * @memberof UsersController
+   */
+  static logout(req, res) {
+    localStorage.clear();
+    res.status(200).json({ message: 'User successfully logged out' });
   }
 };
 

@@ -14,6 +14,10 @@ var _jsonwebtoken = require('jsonwebtoken');
 
 var _jsonwebtoken2 = _interopRequireDefault(_jsonwebtoken);
 
+var _localStorage = require('local-storage');
+
+var _localStorage2 = _interopRequireDefault(_localStorage);
+
 var _validation = require('../utils/validation');
 
 var _validation2 = _interopRequireDefault(_validation);
@@ -21,6 +25,10 @@ var _validation2 = _interopRequireDefault(_validation);
 var _index = require('../constants/index');
 
 var _index2 = _interopRequireDefault(_index);
+
+var _pagination = require('../utils/pagination');
+
+var _pagination2 = _interopRequireDefault(_pagination);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -86,6 +94,7 @@ var UsersController = function () {
         }, 'zabuzatovadase', {
           expiresIn: '24h'
         });
+        _localStorage2.default.set('token', token);
         return res.status(200).json({
           success: true,
           message: 'You have signed up successfully',
@@ -125,6 +134,7 @@ var UsersController = function () {
           }, 'zabuzatovadase', {
             expiresIn: '24h'
           });
+          _localStorage2.default.set('token', token);
           res.status(200).json({ user: user, token: token });
         } else {
           res.status(400).json({ message: 'Invalid Password' });
@@ -154,26 +164,23 @@ var UsersController = function () {
         var selectedUsersList = [];
         var offset = req.query.offset || 0,
             limit = req.query.limit || max;
-        return User.findAll({ offset: offset, limit: limit }).then(function (users) {
-          if (users.length === 0) {
+        return User.findAndCountAll({ offset: offset, limit: limit }).then(function (users) {
+          if (users.rows.length === 0) {
             res.status(500).json({ message: 'No users available for the page selected' });
           } else {
-            if (users.length === 1) {
-              res.status(200).json({
-                userName: users.name,
-                userEmail: users.email,
-                userRole: users.roleId
+            var totalUsersCount = users.count;
+            var pageSize = _pagination2.default.getPageSize(limit, offset);
+            var pageCount = _pagination2.default.getPageCount(totalUsersCount, limit);
+            var currentPage = _pagination2.default.getCurrentPage(totalUsersCount, limit, offset);
+            var pageDetails = { totalUsersCount: totalUsersCount, pageSize: pageSize, pageCount: pageCount, currentPage: currentPage };
+            users.rows.forEach(function (user) {
+              selectedUsersList.push({
+                userName: user.name,
+                userEmail: user.email,
+                userRole: user.roleId
               });
-            } else {
-              users.forEach(function (user) {
-                selectedUsersList.push({
-                  userName: user.name,
-                  userEmail: user.email,
-                  userRole: user.roleId
-                });
-              });
-              res.status(200).json(selectedUsersList);
-            }
+            });
+            res.status(200).json({ selectedUsersList: selectedUsersList, pageDetails: pageDetails });
           }
         });
       }
@@ -342,6 +349,22 @@ var UsersController = function () {
           res.status(400).json({ message: 'You do not have admin privledges to view this user document' });
         }
       });
+    }
+
+    /**
+     * Removes the token from the local storage hence ending its session
+     * abruptly
+     * @static
+     * @param {any} req request made from the client
+     * @param {any} res response from the server
+     * @memberof UsersController
+     */
+
+  }, {
+    key: 'logout',
+    value: function logout(req, res) {
+      _localStorage2.default.clear();
+      res.status(200).json({ message: 'User successfully logged out' });
     }
   }]);
 

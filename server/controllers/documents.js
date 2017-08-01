@@ -1,5 +1,6 @@
 import Constants from '../constants/index';
 import Validation from '../utils/validation';
+import Pagination from '../utils/pagination';
 
 const Document = require('../models/').Document;
 
@@ -69,11 +70,20 @@ class DocumentController {
 					documents.rows.forEach((document) => {
 						filteredDocumentList.push(document);
 					});
-					return res.status(200).json(filteredDocumentList);
+					const totalDocumentCount = documents.count;
+					const pageSize = Pagination.getPageSize(limit, offset);
+					const pageCount = Pagination.getPageCount(totalDocumentCount, limit, offset);
+					const currentPage = Pagination.getCurrentPage(totalDocumentCount, limit, offset);
+					const pageDetails = { totalDocumentCount, pageSize, pageCount, currentPage };
+					return res.status(200).json({ filteredDocumentList, pageDetails });
 				});
 			}
 		} else {
+			const offset = req.query.offset || 0,
+						limit = req.query.limit || max;
 			Document.findAndCountAll({
+				offset,
+				limit,
 				where: {
 					$or: [
 						{ access: { $eq: Constants.PUBLIC }},
@@ -84,7 +94,7 @@ class DocumentController {
 							] //ends $and
 						}
 					]//ends $or
-				}
+				},
 			})
 			.then((documents) => {
 				if(documents.rows.length === 0) {
@@ -93,7 +103,12 @@ class DocumentController {
 				documents.rows.forEach((document) => {
 					filteredDocumentList.push(document);
 				});
-				return res.status(200).json(filteredDocumentList);
+				const totalDocumentCount = documents.count;
+				const pageSize = Pagination.getPageSize(limit, offset);
+				const pageCount = Pagination.getPageCount(totalDocumentCount, limit, offset);
+				const currentPage = Pagination.getCurrentPage(totalDocumentCount, limit, offset);
+				const pageDetails = { totalDocumentCount, pageSize, pageCount, currentPage };
+				return res.status(200).json({ filteredDocumentList, pageDetails });
 			});
 		}
 	}

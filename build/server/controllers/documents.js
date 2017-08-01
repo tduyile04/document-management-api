@@ -14,6 +14,10 @@ var _validation = require('../utils/validation');
 
 var _validation2 = _interopRequireDefault(_validation);
 
+var _pagination = require('../utils/pagination');
+
+var _pagination2 = _interopRequireDefault(_pagination);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -95,11 +99,20 @@ var DocumentController = function () {
 						documents.rows.forEach(function (document) {
 							filteredDocumentList.push(document);
 						});
-						return res.status(200).json(filteredDocumentList);
+						var totalDocumentCount = documents.count;
+						var pageSize = _pagination2.default.getPageSize(limit, offset);
+						var pageCount = _pagination2.default.getPageCount(totalDocumentCount, limit, offset);
+						var currentPage = _pagination2.default.getCurrentPage(totalDocumentCount, limit, offset);
+						var pageDetails = { totalDocumentCount: totalDocumentCount, pageSize: pageSize, pageCount: pageCount, currentPage: currentPage };
+						return res.status(200).json({ filteredDocumentList: filteredDocumentList, pageDetails: pageDetails });
 					});
 				}
 			} else {
+				var _offset = req.query.offset || 0,
+				    _limit = req.query.limit || max;
 				Document.findAndCountAll({
+					offset: _offset,
+					limit: _limit,
 					where: {
 						$or: [{ access: { $eq: _index2.default.PUBLIC } }, {
 							$and: [{ access: { $eq: _index2.default.ROLE } }, { userRoleId: { $eq: roleId } }] //ends $and
@@ -112,7 +125,12 @@ var DocumentController = function () {
 					documents.rows.forEach(function (document) {
 						filteredDocumentList.push(document);
 					});
-					return res.status(200).json(filteredDocumentList);
+					var totalDocumentCount = documents.count;
+					var pageSize = _pagination2.default.getPageSize(_limit, _offset);
+					var pageCount = _pagination2.default.getPageCount(totalDocumentCount, _limit, _offset);
+					var currentPage = _pagination2.default.getCurrentPage(totalDocumentCount, _limit, _offset);
+					var pageDetails = { totalDocumentCount: totalDocumentCount, pageSize: pageSize, pageCount: pageCount, currentPage: currentPage };
+					return res.status(200).json({ filteredDocumentList: filteredDocumentList, pageDetails: pageDetails });
 				});
 			}
 		}

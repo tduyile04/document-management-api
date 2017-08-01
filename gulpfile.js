@@ -17,7 +17,6 @@ gulp.task('watch', () => {
   gulp.watch(['./server/**', './app.js'], ['build']);
 });
 
-
 gulp.task('build-server', () => {
   gulp.src('server/**/*')
   .pipe(babel())
@@ -53,11 +52,11 @@ gulp.task('run-tests', () => {
 });
 
 gulp.task('coverage', () => {
-  gulp.src('./build/src/inverted-index.js')
+  gulp.src('./build/server/controllers/*.js')
     .pipe(istanbul())
     .pipe(istanbul.hookRequire())
     .on('finish', () => {
-      gulp.src('./build/tests/inverted-index-test.js')
+      gulp.src('./build/spec/**/*.js')
       .pipe(babel())
       .pipe(injectModules())
       .pipe(jasmine())

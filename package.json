@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "NODE_ENV=test jasmine",
-    "start": "nodemon index"
+    "start": "gulp"
   },
   "repository": {
     "type": "git",
@@ -26,6 +26,7 @@
     "gulp-babel": "^6.1.2",
     "gulp-jasmine": "^2.4.2",
     "jsonwebtoken": "^7.4.1",
+    "local-storage": "^1.4.2",
     "morgan": "^1.8.2",
     "pg": "^6.4.1",
     "pg-hstore": "^2.3.2",
