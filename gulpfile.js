@@ -52,7 +52,7 @@ gulp.task('run-tests', () => {
 });
 
 gulp.task('coverage', () => {
-  gulp.src('./build/server/controllers/*.js')
+  gulp.src('./build/server/**/*.js')
     .pipe(istanbul())
     .pipe(istanbul.hookRequire())
     .on('finish', () => {
