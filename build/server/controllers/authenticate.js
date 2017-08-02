@@ -26,7 +26,7 @@ var Authentication = function () {
   _createClass(Authentication, null, [{
     key: 'authenticate',
     value: function authenticate(req, res, next) {
-      var token = req.body.token || req.headers['x-access-token'] || req.headerlocalStorage.get('token');
+      var token = req.body.token || req.headers['x-access-token'] || req.headers.Authorization || _localStorage2.default.get('token');
       if (token) {
         _jsonwebtoken2.default.verify(token, 'zabuzatovadase', function (error, decoded) {
           if (error) {

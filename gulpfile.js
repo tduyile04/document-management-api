@@ -1,7 +1,7 @@
 const gulp = require('gulp');
 const babel = require('gulp-babel');
 const clean = require('gulp-clean');
-const jasmine = require('gulp-jasmine');
+const mocha = require('gulp-mocha');
 const injectModules = require('gulp-inject-modules');
 const istanbul = require('gulp-istanbul');
 const coveralls = require('gulp-coveralls');
@@ -47,24 +47,8 @@ gulp.task('serve', () => {
 gulp.task('run-tests', () => {
   gulp.src('./build/spec/**/*.js')
   .pipe(injectModules())
-  .pipe(jasmine())
+  .pipe(mocha({
+    timeout: 10000
+  }))
   .pipe(exit());
-});
-
-gulp.task('coverage', () => {
-  gulp.src('./build/server/**/*.js')
-    .pipe(istanbul())
-    .pipe(istanbul.hookRequire())
-    .on('finish', () => {
-      gulp.src('./build/spec/**/*.js')
-      .pipe(babel())
-      .pipe(injectModules())
-      .pipe(jasmine())
-      .pipe(istanbul.writeReports())
-      .pipe(istanbul.enforceThresholds({ thresholds: { global: 90 } }))
-      .on('end', () => {
-        gulp.src('coverage/**/lcov.info')
-        .pipe(coveralls());
-      });
-    });
 });

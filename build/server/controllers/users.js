@@ -160,10 +160,9 @@ var UsersController = function () {
         return res.status(403).json({ message: 'You do not have the permission to perform this action' });
       }
       if (req.query) {
-        var max = _index2.default.MAXIMUM;
         var selectedUsersList = [];
         var offset = req.query.offset || 0,
-            limit = req.query.limit || max;
+            limit = req.query.limit || _index2.default.MAXIMUM;
         return User.findAndCountAll({ offset: offset, limit: limit }).then(function (users) {
           if (users.rows.length === 0) {
             res.status(500).json({ message: 'No users available for the page selected' });

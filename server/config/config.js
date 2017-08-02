@@ -10,7 +10,7 @@ module.exports = {
     "username": "andeladeveloper",
     "password": null,
     "database": "test-DM-api",
-    "host": "127.0.0.1:4001",
+    "host": "127.0.0.1",
     "dialect": "postgres"
   },
   "production": {

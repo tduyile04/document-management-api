@@ -118,10 +118,9 @@ class UsersController {
       return res.status(403).json({ message: 'You do not have the permission to perform this action' });
     }
     if(req.query) {
-      const max = Constants.MAXIMUM;
       const selectedUsersList = [];
       const offset = req.query.offset || 0,
-            limit = req.query.limit || max;
+            limit = req.query.limit || Constants.MAXIMUM;
       return User.findAndCountAll({ offset, limit })
       .then((users) => {
         if(users.rows.length === 0) {
