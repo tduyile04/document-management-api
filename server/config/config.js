@@ -8,14 +8,14 @@ module.exports = {
     "password": process.env.password,
     "database": process.env.database_dev,
     "host": process.env.host,
-    "dialect": process.env.dialect
+    "dialect": "postgres"
   },
   "test": {
     "username": process.env.username,
     "password": process.env.password,
     "database": process.env.database_test,
     "host": process.env.host,
-    "dialect": process.env.dialect
+    "dialect": "postgres"
   },
   "production": {
     "username": "root",
