@@ -1,10 +1,10 @@
 {
   "development": {
-  "username": "andeladeveloper",
-  "password": null,
-  "database": "document-management-api",
-  "host": "127.0.0.1",
-  "dialect": "postgres"
+    "username": "andeladeveloper",
+    "password": null,
+    "database": "document-management-api",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
   },
   "test": {
     "use_env_variable": "test_url",

@@ -67,7 +67,7 @@ export default class Helper {
       filteredArray.push(data);
     });
     const totalDataCount = context.count;
-    const pageSize = parseInt(Pagination.getPageSize(limit));
+    const pageSize = parseInt(Pagination.getPageSize(limit), 10);
     const pageCount = Pagination.getPageCount(totalDataCount, limit);
     const currentPage = Pagination.getCurrentPage(limit, offset);
     const pageDetails = {
