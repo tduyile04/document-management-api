@@ -17,10 +17,15 @@ gulp.task('watch', () => {
   gulp.watch(['./server/**', './app.js'], ['build']);
 });
 
-gulp.task('build-server', () => {
-  gulp.src('server/**/*')
+gulp.task('build-server', ['pipe-json'], () => {
+  gulp.src('server/**/*.js')
     .pipe(babel())
     .pipe(gulp.dest('./build/server'));
+});
+
+gulp.task('pipe-json', () => {
+  gulp.src('server/config/**')
+    .pipe(gulp.dest('./build/server/config'));
 });
 
 gulp.task('build-spec', () => {
