@@ -7,7 +7,7 @@ const router = express.Router();
 module.exports = (app) => {
   app.use('/api/v1', router);
 
-  //Default route
+  // Default route
   router.get('/', (req, res) => {
     res.status(200).send({
       message: 'Welcome to the Document Management System API'
@@ -18,8 +18,8 @@ module.exports = (app) => {
   router.post('/users/login', userController.logIn);
   router.post('/users/logout', userController.logout);
 
-  //Authentication middleware
-  router.use(authenticateController.authenticate)
+  // Authentication middleware
+  router.use(authenticateController.authenticate);
 
   router.get('/users', userController.getUsers);
   router.get('/user/:id', userController.getUser);
@@ -27,4 +27,4 @@ module.exports = (app) => {
   router.delete('/user/:id', userController.deleteUser);
   router.get('/search/users/', userController.searchUser);
   router.get('/users/:id/documents/', userController.retrieveUserDocuments);
-}
+};

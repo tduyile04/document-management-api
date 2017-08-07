@@ -15,4 +15,4 @@ module.exports = (app) => {
   router.get('/users/:id/documents/alone', documentController.retrieveOnlyUserDocuments);
   router.put('/documents/:id', documentController.updateDocument);
   router.delete('/documents/:id', documentController.deleteDocument);
-}
+};

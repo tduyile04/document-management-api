@@ -1,10 +1,8 @@
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import localStorage from 'local-storage';
 import Validation from '../utils/validation';
 import Constants from '../constants/index';
-import Pagination from '../utils/pagination';
 import Helper from '../utils/helper';
 import Repository from '../utils/repository';
 
@@ -23,10 +21,11 @@ class UsersController {
    * the database
    * @param {any} req request made from the client
    * @param {any} res response from the server
-   * @returns response object
+   * @returns {object} response object
    */
   static signUp(req, res) {
-    const validatedUser = Validation.validateSignUp(req.body.name, req.body.email, req.body.password);
+    const validatedUser = Validation
+      .validateSignUp(req.body.name, req.body.email, req.body.password);
     let name, email, password;
     if (validatedUser) {
       name = validatedUser.name;
@@ -35,7 +34,7 @@ class UsersController {
     } else {
       return res.status(400).json({
         message: 'User input cannot be empty and Email entry must be an email'
-      })
+      });
     }
     const hashedPassword = Helper.hashPassword(password);
     const userDetails = {
@@ -61,25 +60,25 @@ class UsersController {
         token
       });
     })
-    .catch(error => res.status(500).json({
-      message: 'Error signing up user, check if invalid role value'
-    }));
+      .catch(() => res.status(500).json({
+        message: 'Error signing up user, check if invalid role value'
+      }));
   }
   /**
    * Logs in the creates user instance to the app if
    * successfully signed up
    * @param {any} req request made from the client
    * @param {any} res response from the server
-   * @returns response object
+   * @returns {object} response object
    */
   static logIn(req, res) {
-    const email = Validation.checkEmailValidityOf(req.body.email) ? 
+    const email = Validation.checkEmailValidityOf(req.body.email) ?
       Validation.checkEmailValidityOf(req.body.email) :
       false;
     const password = Validation.checkPasswordValidityOf(req.body.password) ?
       Validation.checkPasswordValidityOf(req.body.password) :
       false;
-    if(!email || !password) {
+    if (!email || !password) {
       return res.status(400).json({ message: 'Email and password input cannnot be empty' });
     }
     return User.findOne({
@@ -88,28 +87,27 @@ class UsersController {
       }
     }).then((user) => {
       const result = bcrypt.compareSync(password, user.password);
-      if(result) {
+      if (result) {
         const token = Helper.getJWT(user.id, user.email, user.roleId);
         localStorage.set('token', token);
         res.status(200).json({ user, token });
       } else {
         res.status(400).json({ message: 'Invalid Password' });
       }
-    }).catch((error) => {
+    }).catch(() => {
       res.status(500).json({
         message: 'Problems with either the email or password, Check and try again'
       });
-    })
+    });
   }
   /**
    * Shows a detail of all the users successfully signed up on the 
    * database
    * @param {any} req request made from the client
    * @param {any} res response from the server
-   * @returns response object
+   * @returns {object} response object
    */
   static getUsers(req, res) {
-    const userList = [];
     const userDetails = req.decoded;
     if (userDetails.userRole !== Constants.ADMIN &&
       userDetails.userRole !== Constants.SUPERADMIN) {
@@ -117,14 +115,13 @@ class UsersController {
         message: 'You do not have the permission to perform this action'
       });
     }
-    if(req.query) {
-      const selectedUsersList = [];
+    if (req.query) {
       const offset = req.query && req.query.offset ? req.query.offset : 0,
-            limit = req.query && req.query.limit ? req.query.limit : Constants.MAXIMUM;
+        limit = req.query && req.query.limit ? req.query.limit : Constants.MAXIMUM;
       return User.findAndCountAll({ offset, limit })
-      .then((users) => {
-        res.status(200).json(Helper.listContextDetails(users, limit, offset, 'User'));
-      });
+        .then((users) => {
+          res.status(200).json(Helper.listContextDetails(users, limit, offset, 'User'));
+        });
     }
   }
 
@@ -132,34 +129,31 @@ class UsersController {
    * Retrieves a specific user data from the database
    * @param {any} req request made from the client
    * @param {any} res response from the server
-   * @returns response object
+   * @returns {object} response object
    */
   static getUser(req, res) {
     const userDetails = req.decoded;
-    const id = req.params.id;
     if (userDetails.userRole !== Constants.ADMIN &&
       userDetails.userRole !== Constants.SUPERADMIN) {
       return res.status(403).json({
         message: 'You do not have the permission to perform this action'
       });
     }
-    Repository.findDataById(req.params.id, User, 'User').then((user) => {
-      return res.status(user.status).json(user.data);
-    });
+    Repository.findDataById(req.params.id, User, 'User').then(user => res.status(user.status).json(user.data));
   }
 
   /**
    * Updates a specific user data attribute in the database
    * @param {any} req request made from the client
    * @param {any} res response from the server
-   * @returns response object
+   * @returns {object} response object
    */
   static updateUser(req, res) {
     const userDetails = req.decoded;
     if (userDetails.userRole !== Constants.SUPERADMIN) {
-      const roleId = userDetails.userRole;
-      const validatedUser = Validation.validateUpdateUser(req.body.name, req.body.email, req.body.password);
-      if(!validatedUser) {
+      const validatedUser = Validation
+        .validateUpdateUser(req.body.name, req.body.email, req.body.password);
+      if (!validatedUser) {
         return res.status(400).json({ message: 'Empty fields not allowed, fill them' });
       }
       const name = validatedUser.name;
@@ -176,17 +170,13 @@ class UsersController {
         return res.status(401).json({ message: 'You do not have admin priviledges' });
       } else if (userDetails.userId == req.params.id) {
         Repository.updateContextDetails(updateField, id, User, 'User')
-        .then((user) => {
-          return res.status(user.status).json(user.data);
-        })
+          .then(user => res.status(user.status).json(user.data));
       } else {
         return res.status(401).json({ message: 'You cannot edit another user\'s document' });
       }
     } else {
       Repository.updateUserRoles(req.body.roleId, req.params.id, User, 'User')
-      .then((user) => {
-        return res.status(user.status).json(user.data);
-      });
+        .then(user => res.status(user.status).json(user.data));
     }
   }
 
@@ -194,7 +184,7 @@ class UsersController {
    * Deletes a user instance from the database
    * @param {any} req request made from the client
    * @param {any} res response from the server
-   * @returns response object
+   * @returns {object} response object
    */
   static deleteUser(req, res) {
     const userDetails = req.decoded;
@@ -204,15 +194,13 @@ class UsersController {
       });
     }
     Repository.deleteContextInstance(User, 'User', req.params.id)
-    .then((user) => {
-      return res.status(user.status).json(user.data);
-    });
+      .then(user => res.status(user.status).json(user.data));
   }
   /**
    * Searches for matching user instance from the base
    * @param {any} req request made from the client
    * @param {any} res response from the server
-   * @returns response object
+   * @returns {object} response object
    */
   static searchUser(req, res) {
     const userDetails = req.decoded;
@@ -223,7 +211,6 @@ class UsersController {
       });
     }
     const filteredUsersList = [];
-    const query = Validator.checkDataValidityOf(req.query.q);
     User.findAll({
       where: {
         $or: [
@@ -231,29 +218,27 @@ class UsersController {
             name: {
               $like: `${req.query.q}%`
             }
-          }, 
-          { 
+          },
+          {
             email: {
               $like: `${req.query.q}%`
-            } 
+            }
           }
         ]
       }
     })
-    .then((users) => {
-      if(users.length === 0) {
-        return res.status(404).json({ message: 'No match found for the search query' });
-      }
-      users.forEach((user) => { 
-        filteredUsersList.push(user);
+      .then((users) => {
+        if (users.length === 0) {
+          return res.status(404).json({ message: 'No match found for the search query' });
+        }
+        users.forEach((user) => {
+          filteredUsersList.push(user);
+        });
+        return res.status(200).json(filteredUsersList);
       })
-      return res.status(200).json(filteredUsersList);
-    })
-    .catch((error) => {
-      return res.status(400).json({
+      .catch(() => res.status(400).json({
         message: 'Error occured while searching. Do try again!'
-      });
-    })
+      }));
   }
   /**
    * Retrieves all documents instance for a requested user instance,
@@ -261,6 +246,7 @@ class UsersController {
    * @static
    * @param {any} req request made from the client
    * @param {any} res response from the server
+   * @returns {object} response object
    * @memberof UsersController
    */
   static retrieveUserDocuments(req, res) {
@@ -268,33 +254,33 @@ class UsersController {
     const userEmail = userDetails.userEmail;
     const roleId = userDetails.userRole;
     User.findById(req.params.id)
-    .then((user) => {
-      if (roleId === Constants.ADMIN || roleId === Constants.SUPERADMIN ||
+      .then((user) => {
+        if (roleId === Constants.ADMIN || roleId === Constants.SUPERADMIN ||
         userEmail === user.email) {
-        User.findAll({
-          where: {
-            id: req.params.id,
-          },
-          include: [{
-            model: Document
-          }]
-        })
-        .then((user) => {
-          if(user.length > 0) {
-            res.status(200).json(user);
-          } else {
-            res.status(400).json({ message: 'The user does not exist in the database' });
-          }
-        })
-        .catch((error) => {
-          res.status(400).json({ message: 'Error while getting data from the database' });
-        });
-      } else {
-        res.status(400).json({
-          message: 'You do not have admin privledges to view this user document'
-        });
-      }
-    });
+          User.findAll({
+            where: {
+              id: req.params.id,
+            },
+            include: [{
+              model: Document
+            }]
+          })
+            .then((allUser) => {
+              if (user.length > 0) {
+                res.status(200).json(allUser);
+              } else {
+                res.status(400).json({ message: 'The user does not exist in the database' });
+              }
+            })
+            .catch(() => {
+              res.status(400).json({ message: 'Error while getting data from the database' });
+            });
+        } else {
+          res.status(400).json({
+            message: 'You do not have admin privledges to view this user document'
+          });
+        }
+      });
   }
 
   /**
@@ -303,12 +289,13 @@ class UsersController {
    * @static
    * @param {any} req request made from the client
    * @param {any} res response from the server
+   * @returns {object} response object
    * @memberof UsersController
    */
   static logout(req, res) {
     localStorage.clear();
     res.status(200).json({ message: 'User successfully logged out' });
   }
-};
+}
 
 export default UsersController;

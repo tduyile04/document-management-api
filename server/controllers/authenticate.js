@@ -4,12 +4,16 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+/**
+ * Protects the routes by checking for user validation before giving
+ * access to an endpoint
+ * @class Authentication
+ */
 class Authentication {
-
   /**
    * Retrieves the token obtained from the request made from the client
    * @static
-   * @param {any} req request made from the client
+   * @param {string} req request made from the client
    * @returns {string} token obtained from sign up
    * @memberof Authentication
    */
@@ -26,7 +30,7 @@ class Authentication {
    * @param {any} req request made from the client
    * @param {any} res response from the server
    * @param {any} next pass action to the next middleware/controller
-   * 
+   * @returns {null} passes action to the next moddleware
    * @memberof Authentication
    */
   static authenticate(req, res, next) {
@@ -35,11 +39,10 @@ class Authentication {
       jwt.verify(token, process.env.SECRET, (error, decoded) => {
         if (error) {
           return res.status(401).json({ message: 'Failed to authenticate token' });
-        } else {
-          req.decoded = decoded;
-          next();
         }
-      })
+        req.decoded = decoded;
+        next();
+      });
     } else {
       res.status(400).send({
         success: false,
