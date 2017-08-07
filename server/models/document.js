@@ -17,6 +17,7 @@ module.exports = (sequelize, DataTypes) => {
     access: {
       type: DataTypes.ENUM,
       values: ['public', 'private', 'role'],
+      defaultValue: 'private'
     },
     userRoleId: {
       type: DataTypes.INTEGER

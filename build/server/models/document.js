@@ -1,7 +1,7 @@
 'use strict';
 
-module.exports = function (sequelize, DataTypes) {
-  var Document = sequelize.define('Document', {
+module.exports = (sequelize, DataTypes) => {
+  const Document = sequelize.define('Document', {
     title: {
       type: DataTypes.STRING,
       validate: {
@@ -16,14 +16,15 @@ module.exports = function (sequelize, DataTypes) {
     },
     access: {
       type: DataTypes.ENUM,
-      values: ['public', 'private', 'role']
+      values: ['public', 'private', 'role'],
+      defaultValue: 'private'
     },
     userRoleId: {
       type: DataTypes.INTEGER
     }
   });
 
-  Document.associate = function (models) {
+  Document.associate = models => {
     Document.belongsTo(models.User, {
       foreignKey: 'userId',
       onDelete: 'CASCADE',

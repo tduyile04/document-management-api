@@ -1,15 +1,20 @@
+import Constants from '../constants/index';
+
 export default class Pagination {
   /**
    * Gets the total number of data that can be accomodated
    * for a single page
    * @static
    * @param {any} limit the highest number of data accomodated
-   * @param {any} offset the starting point of the data
    * @returns int
    * @memberof Pagination
    */
   static getPageSize(limit) {
-    return limit;
+    const newlimit = limit && typeof limit !== 'object' ? limit : Constants.DEFAULT;
+    if (newlimit < 1) {
+      return Constants.MAXIMUM;
+    }
+    return newlimit;
   }
 
   /**
@@ -22,7 +27,17 @@ export default class Pagination {
    * @memberof Pagination
    */
   static getPageCount(totalDataCount, limit) {
-    return Math.ceil(totalDataCount / Pagination.getPageSize(limit));
+    let result;
+    const newTotalDataCount = totalDataCount && totalDataCount > 0 ? totalDataCount : 0;
+    const newlimit = limit && limit > 0 ? limit : Constants.MAXIMUM;
+    if (newTotalDataCount === 0) {
+      return Constants.UNIT;
+    }
+    result = Math.ceil(newTotalDataCount / Pagination.getPageSize(newlimit));
+    if (result === 0) {
+      return Constants.UNIT;
+    }
+    return result;
   }
 
   /**
@@ -34,7 +49,14 @@ export default class Pagination {
    * @returns int
    * @memberof Pagination
    */
-  static getCurrentPage(totalDataCount, limit, offset) {
-    return Math.ceil(offset / limit);
+  static getCurrentPage(limit, offset) {
+    let result;
+    const newlimit = limit && limit > 0 ? limit : Constants.MAXIMUM;
+    const newOffset = offset && offset > 0 ? offset : Constants.ZERO;
+    result = Math.ceil(newOffset / newlimit);
+    if((newOffset % newlimit) === 0 || result === 0) {
+      return result + 1;
+    }
+    return result;
   }
 }

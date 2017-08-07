@@ -14,9 +14,9 @@ var _authenticate2 = _interopRequireDefault(_authenticate);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var router = _express2.default.Router();
+const router = _express2.default.Router();
 
-module.exports = function (app) {
+module.exports = app => {
   app.use('/api/v1', router);
 
   router.use(_authenticate2.default.authenticate);

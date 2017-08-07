@@ -1,7 +1,7 @@
 'use strict';
 
-module.exports = function (sequelize, DataTypes) {
-  var User = sequelize.define('User', {
+module.exports = (sequelize, DataTypes) => {
+  const User = sequelize.define('User', {
     name: {
       type: DataTypes.STRING,
       validate: {
@@ -52,7 +52,7 @@ module.exports = function (sequelize, DataTypes) {
     }
   });
 
-  User.associate = function (models) {
+  User.associate = models => {
     User.hasMany(models.Document, {
       foreignKey: 'userId'
     });
