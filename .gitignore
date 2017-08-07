@@ -3,3 +3,6 @@ package-lock.json
 coverage/
 .nyc_output/
 build/
+.env
+.DS_Store
+/build
