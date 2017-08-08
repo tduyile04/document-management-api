@@ -451,7 +451,7 @@ describe('Users integration tests for the user endpoint', () => {
         .end((err, res) => {
           if(!err) {
             res.should.have.status(200);
-            res.body.User.length.should.should.be.eql(1);
+            res.body.length.should.be.eql(1);
           }
           done();
         });
