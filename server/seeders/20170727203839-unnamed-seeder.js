@@ -1,7 +1,5 @@
-'use strict';
-
 module.exports = {
-  up: function (queryInterface, Sequelize) {
+  up(queryInterface, Sequelize) {
     /*
       Add altering commands here.
       Return a promise to correctly handle asynchronicity.
@@ -15,23 +13,23 @@ module.exports = {
     return queryInterface.bulkInsert('Roles', [
       {
         roleType: 'regular',
-        createdAt: "2017-03-20T20:31:45.000Z",
-        updatedAt: "2017-03-20T20:31:45.000Z",
+        createdAt: '2017-03-20T20:31:45.000Z',
+        updatedAt: '2017-03-20T20:31:45.000Z',
       },
       {
         roleType: 'admin',
-        createdAt: "2017-03-20T20:31:45.000Z",
-        updatedAt: "2017-03-20T20:31:45.000Z",
+        createdAt: '2017-03-20T20:31:45.000Z',
+        updatedAt: '2017-03-20T20:31:45.000Z',
       },
       {
         roleType: 'superadmin',
-        createdAt: "2017-03-20T20:31:45.000Z",
-        updatedAt: "2017-03-20T20:31:45.000Z",
+        createdAt: '2017-03-20T20:31:45.000Z',
+        updatedAt: '2017-03-20T20:31:45.000Z',
       }
     ], {});
   },
 
-  down: function (queryInterface, Sequelize) {
+  down(queryInterface, Sequelize) {
     /*
       Add reverting commands here.
       Return a promise to correctly handle asynchronicity.

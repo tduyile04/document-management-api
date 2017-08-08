@@ -1,12 +1,12 @@
 const gulp = require('gulp');
 const babel = require('gulp-babel');
-const clean = require('gulp-clean');
-const jasmine = require('gulp-jasmine');
+const mocha = require('gulp-mocha');
 const injectModules = require('gulp-inject-modules');
-const istanbul = require('gulp-istanbul');
-const coveralls = require('gulp-coveralls');
 const nodemon = require('gulp-nodemon');
 const exit = require('gulp-exit');
+
+
+process.env.NODE_ENV = 'test';
 
 gulp.task('build', ['build-server', 'build-spec', 'build-app']);
 gulp.task('default', ['build', 'serve', 'watch']);
@@ -17,22 +17,27 @@ gulp.task('watch', () => {
   gulp.watch(['./server/**', './app.js'], ['build']);
 });
 
-gulp.task('build-server', () => {
-  gulp.src('server/**/*')
-  .pipe(babel())
-  .pipe(gulp.dest('./build/server'));
+gulp.task('build-server', ['pipe-json'], () => {
+  gulp.src('server/**/*.js')
+    .pipe(babel())
+    .pipe(gulp.dest('./build/server'));
+});
+
+gulp.task('pipe-json', () => {
+  gulp.src('server/config/**')
+    .pipe(gulp.dest('./build/server/config'));
 });
 
 gulp.task('build-spec', () => {
   gulp.src('spec/**/*')
-  .pipe(babel())
-  .pipe(gulp.dest('./build/spec'));
+    .pipe(babel())
+    .pipe(gulp.dest('./build/spec'));
 });
 
 gulp.task('build-app', () => {
   gulp.src('./app.js')
-  .pipe(babel())
-  .pipe(gulp.dest('./build'));
+    .pipe(babel())
+    .pipe(gulp.dest('./build'));
 });
 
 gulp.task('serve', () => {
@@ -46,25 +51,9 @@ gulp.task('serve', () => {
 
 gulp.task('run-tests', () => {
   gulp.src('./build/spec/**/*.js')
-  .pipe(injectModules())
-  .pipe(jasmine())
-  .pipe(exit());
-});
-
-gulp.task('coverage', () => {
-  gulp.src('./build/server/controllers/*.js')
-    .pipe(istanbul())
-    .pipe(istanbul.hookRequire())
-    .on('finish', () => {
-      gulp.src('./build/spec/**/*.js')
-      .pipe(babel())
-      .pipe(injectModules())
-      .pipe(jasmine())
-      .pipe(istanbul.writeReports())
-      .pipe(istanbul.enforceThresholds({ thresholds: { global: 90 } }))
-      .on('end', () => {
-        gulp.src('coverage/**/lcov.info')
-        .pipe(coveralls());
-      });
-    });
+    .pipe(injectModules())
+    .pipe(mocha({
+      timeout: 10000
+    }))
+    .pipe(exit());
 });

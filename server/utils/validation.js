@@ -1,31 +1,42 @@
-const validator = require('validator');
+import validator from 'validator';
 
+/**
+ * Ensures user entry validation before hitting the database
+ * @export
+ * @class Validation
+ */
 export default class Validation {
   /**
    * Removes whitespaces before and after the value
    * @static
-   * @param {any} value 
-   * @returns boolean
+   * @param {string} value 
+   * @returns {boolean} true/false
    * @memberof Validation
    */
   static trim(value) {
+    if (typeof value !== 'string') {
+      return '';
+    }
     return validator.trim(value);
   }
   /**
    * Checks if email input is really a valid email
    * @static
-   * @param {any} email 
-   * @returns boolean
+   * @param {string} email 
+   * @returns {boolean} true/false
    * @memberof Validation
    */
   static isEmail(email) {
-    return validator.isEmail(email)
+    if (typeof email !== 'string') {
+      return '';
+    }
+    return validator.isEmail(email);
   }
   /**
    * Checks if user input is empty
    * @static
-   * @param {any} stringValue 
-   * @returns boolean
+   * @param {string} stringValue 
+   * @returns {boolean} true/false
    * @memberof Validation
    */
   static isEmpty(stringValue) {
@@ -34,18 +45,18 @@ export default class Validation {
   /**
    * Checks if user input is an integer
    * @static
-   * @param {any} value 
-   * @returns boolean
+   * @param {string} value 
+   * @returns {boolean} true/false
    * @memberof Validation
    */
   static isInt(value) {
-    return validator.isInt(value);
+    return validator.isInt(Validation.trim(value));
   }
   /**
    * Escapes html entities from user inputs, to prevent sql injection
    * @static
-   * @param {any} input 
-   * @returns boolean
+   * @param {string} input 
+   * @returns {boolean} true/fasle
    * @memberof Validation
    */
   static escape(input) {
@@ -54,8 +65,8 @@ export default class Validation {
   /**
    * Checks if password supplied is not empty
    * @static
-   * @param {any} pasword 
-   * @returns string
+   * @param {any} password 
+   * @returns {string} validated and formatted output
    * @memberof Validation
    */
   static checkPasswordValidityOf(password) {
@@ -65,19 +76,19 @@ export default class Validation {
   /**
    * Checks if the data input is not emty and escapes all html entities in the data
    * @static
-   * @param {any} input 
-   * @returns string
+   * @param {string} input 
+   * @returns {string} validated and formatted output
    * @memberof Validation
    */
-  static checkDataValidityOf(input)  {
+  static checkDataValidityOf(input) {
     const processedInput = !Validation.isEmpty(input) ? Validation.escape(input) : '';
     return processedInput;
   }
   /**
    * Checks if the email supplied is a valid email
    * @static
-   * @param {any} email 
-   * @returns string
+   * @param {sring} mail 
+   * @returns {string} validated and formatted output
    * @memberof Validation
    */
   static checkEmailValidityOf(mail) {
@@ -87,8 +98,8 @@ export default class Validation {
   /**
    * Checks if the string input supplied is number
    * @static
-   * @param {any} input 
-   * @returns string
+   * @param {string} input 
+   * @returns {string} validated and formatted output
    * @memberof Validation
    */
   static checkIntegerValidityOf(input) {
@@ -97,15 +108,32 @@ export default class Validation {
   }
 
   /**
-   * Checks the validity of each user input supplied 
+   * Checks the validity of each user input supplied during user sign up
    * @static
-   * @param {any} name 
-   * @param {any} email 
-   * @param {any} password 
-   * @returns object
+   * @param {string} _name 
+   * @param {string} _email 
+   * @param {string} _password 
+   * @returns {object} validated and formatted output
    * @memberof Validation
    */
   static validateSignUp(_name, _email, _password) {
+    const name = !Validation.isEmpty(_name) ? Validation.trim(_name) : false;
+    const email = Validation.checkEmailValidityOf(_email) ? _email : false;
+    const password = !Validation.isEmpty(_password) ? _password : false;
+    const userData = { name, email, password };
+    return (name && email && password) ? userData : false;
+  }
+
+  /**
+   * Checks the validity of each user input supplied during user updates
+   * @static
+   * @param {string} _name 
+   * @param {string} _email 
+   * @param {string} _password 
+   * @returns {object} validated and formatted output
+   * @memberof Validation
+   */
+  static validateUpdateUser(_name, _email, _password) {
     const name = !Validation.isEmpty(_name) ? Validation.trim(_name) : false;
     const email = Validation.checkEmailValidityOf(_email) ? _email : false;
     const password = !Validation.isEmpty(_password) ? _password : false;

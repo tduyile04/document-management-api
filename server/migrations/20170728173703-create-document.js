@@ -20,7 +20,7 @@ module.exports = {
         }
       },
       content: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
         allowNull: false,
         notEmpty: {
           args: true,
@@ -29,7 +29,8 @@ module.exports = {
       },
       access: {
         type: Sequelize.ENUM,
-        values: ['private', 'public', 'role']
+        values: ['private', 'public', 'role'],
+        defaultValue: 'private'
       },
       userRoleId: {
         allowNull: false,
