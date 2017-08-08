@@ -15,7 +15,7 @@ app.get('*', (req, res) => {
   res.status(200).send({ message: 'API endpoint is unavailable. Refer to documentation for available endpoints' });
 });
 
-const port = process.env.port || 5000;
+const port = parseInt(process.env.PORT, 10) || 5000;
 
 const server = app.listen(port, () => {
   console.log(`Listening on port ${port}`);
