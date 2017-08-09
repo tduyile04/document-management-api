@@ -7,7 +7,7 @@
   },
   "main": "./build/app.js",
   "scripts": {
-    "start": "NODE_ENV=production gulp build --env production && nodemon ./build/app --env production",
+    "start": "NODE_ENV=production gulp build --env production && node ./build/app --env production",
     "dev": "gulp",
     "test": "NODE_ENV=test gulp build --env test && nyc --reporter=html --reporter=text --env test mocha ./build/spec/**/*.js --timeout=3000",
     "coverage": "NODE_ENV=test nyc report --reporter=text-lcov | coveralls"
