@@ -43,7 +43,7 @@ class UsersController {
       password: hashedPassword,
       roleId: req.body.roleId
     };
-    return User.findOrCreate({
+    User.findOrCreate({
       where: {
         email: userDetails.email
       },
@@ -82,7 +82,7 @@ class UsersController {
     if (!email || !password) {
       return res.status(400).json({ message: 'Email and password input cannnot be empty' });
     }
-    return User.findOne({
+    User.findOne({
       where: {
         email
       }
@@ -91,10 +91,9 @@ class UsersController {
       if (result) {
         const token = Helper.getJWT(user.id, user.email, user.roleId);
         localStorage.set('token', token);
-        res.status(200).json({ user, token });
-      } else {
-        res.status(400).json({ message: 'Invalid Password' });
+        return res.status(200).json({ user, token });
       }
+      return res.status(400).json({ message: 'Invalid Password' });
     }).catch((error) => {
       res.status(500).json({
         message: 'Problems with either the email or password, Check and try again',
