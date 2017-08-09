@@ -90,7 +90,13 @@ class UsersController {
       if (result) {
         const token = Helper.getJWT(user.id, user.email, user.roleId);
         localStorage.set('token', token);
-        res.status(200).json({ user, token });
+        const userProfile = {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          roleId: user.roleId
+        };
+        res.status(200).json({ user: userProfile, token });
       } else {
         res.status(400).json({ message: 'Invalid Password' });
       }
