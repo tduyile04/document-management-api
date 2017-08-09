@@ -5,9 +5,6 @@ const injectModules = require('gulp-inject-modules');
 const nodemon = require('gulp-nodemon');
 const exit = require('gulp-exit');
 
-
-process.env.NODE_ENV = 'test';
-
 gulp.task('build', ['build-server', 'build-spec', 'build-app']);
 gulp.task('default', ['build', 'serve', 'watch']);
 gulp.task('tests', ['run-tests', 'coverage']);

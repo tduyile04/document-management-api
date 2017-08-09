@@ -41,8 +41,9 @@ class DocumentController {
         return res.status(409).json({ message: 'Document with the same title already exists' });
       }
       return res.status(200).json(document);
-    }).catch(() => res.status(400).json({
-      message: 'Error encountered creating the documents. Check if invalid document access'
+    }).catch(error => res.status(400).json({
+      message: 'Error encountered creating the documents. Check if invalid document access',
+      error
     }));
   }
   /**

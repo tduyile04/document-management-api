@@ -60,8 +60,9 @@ class UsersController {
         token
       });
     })
-      .catch(() => res.status(500).json({
-        message: 'Error signing up user, check if invalid role value'
+      .catch(error => res.status(500).json({
+        message: 'Error signing up user, check if invalid role value',
+        error
       }));
   }
   /**
@@ -94,9 +95,10 @@ class UsersController {
       } else {
         res.status(400).json({ message: 'Invalid Password' });
       }
-    }).catch(() => {
+    }).catch((error) => {
       res.status(500).json({
-        message: 'Problems with either the email or password, Check and try again'
+        message: 'Problems with either the email or password, Check and try again',
+        error
       });
     });
   }
