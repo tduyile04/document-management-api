@@ -59,11 +59,11 @@ class UsersController {
         message: 'You have signed up successfully',
         token
       });
-    })
-      .catch(error => res.status(500).json({
-        message: 'Error signing up user, check if invalid role value',
-        error
-      }));
+    });
+    // .catch(error => res.status(500).json({
+    //   message: 'Error signing up user, check if invalid role value',
+    //   error
+    // }));
   }
   /**
    * Logs in the creates user instance to the app if
@@ -94,12 +94,13 @@ class UsersController {
         return res.status(200).json({ user, token });
       }
       return res.status(400).json({ message: 'Invalid Password' });
-    }).catch((error) => {
-      res.status(500).json({
-        message: 'Problems with either the email or password, Check and try again',
-        error
-      });
     });
+    // .catch((error) => {
+    //   res.status(500).json({
+    //     message: 'Problems with either the email or password, Check and try again',
+    //     error
+    //   });
+    // });
   }
   /**
    * Shows a detail of all the users successfully signed up on the 
