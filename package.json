@@ -7,6 +7,7 @@
   },
   "main": "./build/app.js",
   "scripts": {
+    "postinstall": "gulp build",
     "start": "NODE_ENV=production gulp build --env production && node ./build/app --env production",
     "dev": "gulp",
     "test": "NODE_ENV=test gulp build --env test && nyc --reporter=html --reporter=text --env test mocha ./build/spec/**/*.js --timeout=3000",
