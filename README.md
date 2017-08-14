@@ -20,55 +20,55 @@ Project Dependencies
 
 ### Dependencies
 
-babel-cli - Allows running the app in ES6 mode on the fly without having to transpile down to ES5
+**babel-cli** - Allows running the app in ES6 mode on the fly without having to transpile down to ES5
 
-babel-preset-es2015, babel-preset-stage-0 - These packages provide Babel presets for es2015 plugins, stage 0 plugins
+**babel-preset-es2015, babel-preset-stage-0** - These packages provide Babel presets for es2015 plugins, stage 0 plugins
 
-bcryptjs - Used to hash passwords
+**bcryptjs** - Used to hash passwords
 
-body-parser - Node.js body parsing middleware. Parse incoming request bodies in a middleware before your handlers, available under the req.body property.
+**body-parser** - Node.js body parsing middleware. Parse incoming request bodies in a middleware before your handlers, available under the req.body property.
 
-dotenv - Loads environment variables
+**dotenv** - Loads environment variables
 
-express - Used as the web server for this application
+**express** - Used as the web server for this application
 
-express-validator - Validates input on request body, params and query
+**express-validator** - Validates input on request body, params and query
 
-jsonwebtoken - Generates JWT tokens and can verify them
+**jsonwebtoken** - Generates JWT tokens and can verify them
 
-pg - Non-blocking PostgreSQL client for node.js. Pure JavaScript and optional native libpq bindings
+**pg** - Non-blocking PostgreSQL client for node.js. Pure JavaScript and optional native libpq bindings
 
-pg-hstore - A node package for serializing and deserializing JSON data to hstore format
+**pg-hstore** - A node package for serializing and deserializing JSON data to hstore format
 
-sequelize - Sequelize is a promise-based Node.js ORM for Postgres, MySQL, SQLite and Microsoft SQL Server. It features solid transaction support, relations, read replication and more
+**sequelize** - Sequelize is a promise-based Node.js ORM for Postgres, MySQL, SQLite and Microsoft SQL Server. It features solid transaction support, relations, read replication and more
 
-sequelize-cli - The Sequelize Command Line Interface (CLI)
+**sequelize-cli** - The Sequelize Command Line Interface (CLI)
 etc.
 
 
 ### Development Dependencies
 
-chai - Chai is a BDD / TDD assertion library for node and the browser that can be delightfully paired with any javascript testing framework.
+**chai** - Chai is a BDD / TDD assertion library for node and the browser that can be delightfully paired with any javascript testing framework.
 
-coveralls - Coveralls.io support for node.js. Get the great coverage reporting of coveralls.io and add a cool coverage button to your README.
+**coveralls** - Coveralls.io support for node.js. Get the great coverage reporting of coveralls.io and add a cool coverage button to your README.
 
-gulp - gulp is a toolkit that helps you automate painful or time-consuming tasks in your development workflow.
+**gulp** - gulp is a toolkit that helps you automate painful or time-consuming tasks in your development workflow.
 
-gulp-babel - Use next generation JavaScript, today, with Babel
+**gulp-babel** - Use next generation JavaScript, today, with Babel
 
-gulp-exit - ensures that the task is terminated after finishing.
+**gulp-exit** - ensures that the task is terminated after finishing.
 
-gulp-inject-modules - Loads JavaScript files on-demand from a Gulp stream into Node's module loader.
+**gulp-inject-modules** - Loads JavaScript files on-demand from a Gulp stream into Node's module loader.
 
-gulp-istanbul - Istanbul unit test coverage plugin for gulp.
+**gulp-istanbul** - Istanbul unit test coverage plugin for gulp.
 
-gulp-shell - A handy command line interface for gulp
+**gulp-shell** - A handy command line interface for gulp
 
-gulp-nodemon - it's gulp + nodemon + convenience
+**gulp-nodemon** - it's gulp + nodemon + convenience
 
-mocha - A basic testing framework
+**mocha** - A basic testing framework
 
-supertest - HTTP assertions made easy via superagent.
+**supertest** - HTTP assertions made easy via superagent.
 etc.
 
 ### Installation and Setup
@@ -87,27 +87,46 @@ Users are assigned a token when signup or signin. This token is then used for su
 
 ### Below are the API endpoints and their functions
 
-EndPoint	Functionality
-POST /api/v1/users/login	Logs a user in.
-POST /api/v1/users/	Creates a new user.
-GET /api/v1/users/	Find matching instances of user.
-GET /api/v1/users-docs/	Find matching instances of users and documents
-GET /api/v1/users/	Find user.
-PUT /api/v1/users/	Update user attributes.
-DELETE /api/v1/users/	Delete user.
-POST /api/v1/documents/	Creates a new document instance.
-POST /api/v1/roles/	Creates a new role instance.
-GET /api/v1/roles/	Find matching instances of role
-GET /api/v1/roles-users/	Find matching instances of roles and users
-GET /api/v1/documents/	Find matching instances of document.
-GET /api/v1/documents/	Find document.
-PUT /api/v1/documents/	Update document attributes.
-DELETE /api/v1/documents/	Delete document.
-GET /api/v1/users//documents	Find all documents belonging to the user.
-GET /api/v1/search/users/	Gets all users with username, firstname or lastname matching or containing the searcht erm
-GET /api/v1/search/documents/	Gets all documents with title or content matching or containing the search term
-GET /api/v1/users/page/?limit={integer}&offset={integer}	Pagination for users.
-GET /api/v1/documents/page/?limit={integer}&offset={integer}	Pagination for docs.
+EndPoint Functionality
+**POST** /api/v1/users/login	Logs a user in.
+
+**POST** /api/v1/users/	Creates a new user.
+
+**GET** /api/v1/users/	Find matching instances of user.
+
+**GET** /api/v1/users-docs/	Find matching instances of users and documents
+
+**GET** /api/v1/users/	Find user.
+
+**PUT** /api/v1/users/	Update user attributes.
+
+**DELETE** /api/v1/users/	Delete user.
+
+**POST** /api/v1/documents/	Creates a new document instance.
+
+**POST** /api/v1/roles/	Creates a new role instance.
+
+**GET** /api/v1/roles/	Find matching instances of role
+
+**GET** /api/v1/roles-users/	Find matching instances of roles and users
+
+**GET** /api/v1/documents/	Find matching instances of document.
+
+**GET** /api/v1/documents/	Find document.
+
+**PUT** /api/v1/documents/	Update document attributes.
+
+**DELETE** /api/v1/documents/	Delete document.
+
+**GET** /api/v1/users//documents	Find all documents belonging to the user.
+
+**GET** /api/v1/search/users/	Gets all users with username, firstname or lastname matching or containing the search term
+
+**GET** /api/v1/search/documents/	Gets all documents with title or content matching or containing the search term
+
+**GET** /api/v1/users/page/?limit={integer}&offset={integer}	Pagination for users.
+
+**GET** /api/v1/documents/page/?limit={integer}&offset={integer}	Pagination for docs.
 
 ### How to contribute
 
@@ -130,7 +149,7 @@ The project owner merges or closes the Pull Request.
 
 ### API Documentation
 
-The API documentation is found homepage of the hosted API https://edocumentmgtapi.herokuapp.com/
+The API documentation is found at the homepage of the hosted API https://edocumentmgtapi.herokuapp.com/
 
 ### Limitations
 
