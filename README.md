@@ -16,7 +16,8 @@ Local Development
 
 Postgresql and
 Node.js >= v8.0.0.
-Project Dependencies
+
+### Project Dependencies
 
 ### Dependencies
 
