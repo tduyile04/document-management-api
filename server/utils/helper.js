@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-import Pagination from './pagination';
+import Pagination from './Pagination';
 
 dotenv.config();
 

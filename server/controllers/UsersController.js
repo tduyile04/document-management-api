@@ -1,13 +1,14 @@
 import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
 import localStorage from 'local-storage';
-import Validation from '../utils/validation';
-import Constants from '../constants/index';
-import Helper from '../utils/helper';
-import Repository from '../utils/repository';
+import Validation from '../utils/Validation';
+import Constants from '../constants/Constants';
+import Helper from '../utils/Helper';
+import Repository from '../utils/Repository';
+import models from '../../server/models';
 
-const User = require('../models/').User;
-const Document = require('../models/').Document;
+const User = models.User;
+const Document = models.Document;
 
 dotenv.config();
 
@@ -60,8 +61,9 @@ class UsersController {
         token
       });
     })
-      .catch(() => res.status(500).json({
-        message: 'Error signing up user, check if invalid role value'
+      .catch(error => res.status(500).json({
+        message: 'Error signing up user, check if invalid role value',
+        error
       }));
   }
   /**
@@ -261,30 +263,30 @@ class UsersController {
     const roleId = userDetails.userRole;
     User.findById(req.params.id)
       .then((user) => {
-        if (roleId === Constants.ADMIN || roleId === Constants.SUPERADMIN ||
-        userEmail === user.email) {
-          User.findAll({
-            where: {
-              id: req.params.id,
-            },
-            include: [{
-              model: Document
-            }]
-          })
-            .then((allUser) => {
-              if (user.length > 0) {
-                res.status(200).json(allUser);
-              } else {
-                res.status(400).json({ message: 'The user does not exist in the database' });
-              }
+        if (user) {
+          if (roleId === Constants.ADMIN || roleId === Constants.SUPERADMIN ||
+          userEmail === user.email) {
+            User.findAll({
+              where: {
+                id: req.params.id,
+              },
+              include: [{
+                model: Document
+              }]
             })
-            .catch(() => {
-              res.status(400).json({ message: 'Error while getting data from the database' });
+              .then((allUser) => {
+                res.status(200).json(allUser);
+              })
+              .catch(() => {
+                res.status(400).json({ message: 'Error while getting data from the database' });
+              });
+          } else {
+            res.status(400).json({
+              message: 'You do not have admin privledges to view this user document'
             });
+          }
         } else {
-          res.status(400).json({
-            message: 'You do not have admin privledges to view this user document'
-          });
+          res.status(400).json({ message: 'The user does not exist in the database' });
         }
       });
   }

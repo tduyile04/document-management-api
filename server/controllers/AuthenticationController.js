@@ -9,7 +9,7 @@ dotenv.config();
  * access to an endpoint
  * @class Authentication
  */
-class Authentication {
+class AuthenticationController {
   /**
    * Retrieves the token obtained from the request made from the client
    * @static
@@ -34,7 +34,7 @@ class Authentication {
    * @memberof Authentication
    */
   static authenticate(req, res, next) {
-    const token = Authentication.getTokenFromRequest(req);
+    const token = AuthenticationController.getTokenFromRequest(req);
     if (token) {
       jwt.verify(token, process.env.SECRET, (error, decoded) => {
         if (error) {
@@ -52,4 +52,4 @@ class Authentication {
   }
 }
 
-export default Authentication;
+export default AuthenticationController;

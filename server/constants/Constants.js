@@ -1,4 +1,4 @@
-module.exports = {
+const Constants = {
   ZERO: 0,
   UNIT: 1,
   UPDATED: 1,
@@ -11,3 +11,6 @@ module.exports = {
   PRIVATE: 'private',
   ROLE: 'role'
 };
+
+export default Constants;
+

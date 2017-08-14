@@ -1,5 +1,5 @@
 import regeneratorRuntime from 'regenerator-runtime';
-import Constants from '../constants/index';
+import Constants from '../constants/Constants';
 
 /**
  * An helper class that abstracts shared model queries so as to prevent

@@ -1,15 +1,16 @@
-import Constants from '../constants/index';
-import Validation from '../utils/validation';
-import Helper from '../utils/helper';
-import Repository from '../utils/repository';
+import Constants from '../constants/Constants';
+import Validation from '../utils/Validation';
+import Helper from '../utils/Helper';
+import Repository from '../utils/Repository';
+import models from '../../server/models';
 
-const Document = require('../models/').Document;
+const Document = models.Document;
 
 /**
  * Handles all the functionality for the document instances
  * @class DocumentController
  */
-class DocumentController {
+class DocumentsController {
   /**
    * Creates a new document instance and saves it to 
    * the database
@@ -60,7 +61,9 @@ class DocumentController {
         const offset = req.query.offset || 0,
           limit = req.query.limit || Constants.MAXIMUM;
         Document.findAndCountAll({ offset, limit })
-          .then(documents => res.status(200).json(Helper.listContextDetails(documents, limit, offset, 'Documents')));
+          .then(documents => res.status(200).json(
+            Helper.listContextDetails(documents, limit, offset, 'Documents')
+          ));
       }
     } else {
       const offset = req.query && req.query.offset ? req.query.offset : 0,
@@ -80,7 +83,9 @@ class DocumentController {
           ]// ends $or
         },
       })
-        .then(documents => res.status(200).json(Helper.listContextDetails(documents, limit, offset)));
+        .then(documents => res.status(200).json(
+          Helper.listContextDetails(documents, limit, offset, 'Documents')
+        ));
     }
   }
   /**
@@ -214,4 +219,4 @@ class DocumentController {
   }
 }
 
-export default DocumentController;
+export default DocumentsController;

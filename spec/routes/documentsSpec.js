@@ -4,11 +4,13 @@ import chaiHttp from 'chai-http';
 import bcrypt from 'bcrypt';
 import localStorage from 'local-storage';
 import server from '../../app';
-import Constants from '../../server/constants/index';
+import Constants from '../../server/constants/Constants';
+import models from '../../server/models';
 
-const User = require('../../server/models/').User;
-const Role = require('../../server/models/').Roles;
-const Document = require('../../server/models/').Document;
+const User = models.User;
+const Role = models.Roles;
+const Document = models.Document;
+
 const should = chai.should();
 
 chai.use(chaiHttp);

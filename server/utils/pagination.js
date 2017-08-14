@@ -1,4 +1,4 @@
-import Constants from '../constants/index';
+import Constants from '../constants/Constants';
 
 /**
  * Creates a pagination helper class that helps abstract the page functionality

@@ -3,6 +3,7 @@ const babel = require('gulp-babel');
 const mocha = require('gulp-mocha');
 const injectModules = require('gulp-inject-modules');
 const nodemon = require('gulp-nodemon');
+const shell = require('gulp-shell');
 const exit = require('gulp-exit');
 
 
@@ -49,7 +50,7 @@ gulp.task('serve', () => {
   });
 });
 
-gulp.task('run-tests', () => {
+gulp.task('test', () => {
   gulp.src('./build/spec/**/*.js')
     .pipe(injectModules())
     .pipe(mocha({
@@ -57,3 +58,7 @@ gulp.task('run-tests', () => {
     }))
     .pipe(exit());
 });
+
+gulp.task('coverage', shell.task([
+  'NODE_ENV=test nyc --reporter=html --reporter=text --env test mocha ./build/spec/**/*.js --timeout=3000',
+]));
