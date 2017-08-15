@@ -2,8 +2,11 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import logger from 'morgan';
 import path from 'path';
+import dotenv from 'dotenv';
 import UserRoutes from './server/routes/UserRoutes';
 import DocumentRoutes from './server/routes/DocumentRoutes';
+
+dotenv.config();
 
 const app = express();
 
