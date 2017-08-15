@@ -1,0 +1,18 @@
+{
+  "development": {
+    "username": "andeladeveloper",
+    "password": null,
+    "database": "document-management-api",
+    "host": "127.0.0.1",
+    "dialect": "postgres",
+    "port": 5432
+  },
+  "test": {
+    "use_env_variable": "test_url",
+    "dialect": "postgres"
+  },
+  "production": {
+    "use_env_variable": "production_url",
+    "dialect": "postgres"
+  }
+}
