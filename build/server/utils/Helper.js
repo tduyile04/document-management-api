@@ -101,7 +101,7 @@ var Helper = function () {
         return result;
       }
       context.rows.forEach(function (data) {
-        filteredArray.push(data);
+        filteredArray.push(Helper.chooseContext(modelName, data));
       });
       var totalDataCount = context.count;
       var pageSize = parseInt(_Pagination2.default.getPageSize(limit), 10);
@@ -115,6 +115,39 @@ var Helper = function () {
       };
       result['' + modelName] = filteredArray;
       result.pageDetails = pageDetails;
+      return result;
+    }
+
+    /**
+     * Selects the appropriate response based on the model name
+     * supplied
+     * @static
+     * @param {string} modelName The name of the model
+     * @param {object} data The data passed in
+     * @returns {object} the resulting data from the choice selected
+     * @memberof Helper
+     */
+
+  }, {
+    key: 'chooseContext',
+    value: function chooseContext(modelName, data) {
+      var result = {};
+      switch (modelName) {
+        case 'users':
+          result = {
+            id: data.id,
+            name: data.name,
+            email: data.email,
+            roleId: data.roleId,
+            createdAt: data.createdAt,
+            updatedAt: data.updatedAt
+          };
+          break;
+        case 'documents':
+          result = data;
+          break;
+        default:
+      }
       return result;
     }
   }]);

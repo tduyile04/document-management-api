@@ -38,9 +38,9 @@ var UserRoutes = function UserRoutes(app) {
   router.use(_AuthenticationController2.default.authenticate);
 
   router.get('/users', _UsersController2.default.getUsers);
-  router.get('/user/:id', _UsersController2.default.getUser);
-  router.put('/user/:id', _UsersController2.default.updateUser);
-  router.delete('/user/:id', _UsersController2.default.deleteUser);
+  router.get('/users/:id', _UsersController2.default.getUser);
+  router.put('/users/:id', _UsersController2.default.updateUser);
+  router.delete('/users/:id', _UsersController2.default.deleteUser);
   router.get('/search/users/', _UsersController2.default.searchUser);
   router.get('/users/:id/documents/', _UsersController2.default.retrieveUserDocuments);
 };

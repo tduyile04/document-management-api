@@ -74,14 +74,17 @@ export default class Validation {
     return processedInput;
   }
   /**
-   * Checks if the data input is not emty and escapes all html entities in the data
+   * Checks if the data input is not emty and escapes all
+   * html entities in the data
    * @static
    * @param {string} input 
    * @returns {string} validated and formatted output
    * @memberof Validation
    */
   static checkDataValidityOf(input) {
-    const processedInput = !Validation.isEmpty(input) ? Validation.escape(input) : '';
+    const processedInput = !Validation.isEmpty(input)
+      ? Validation.escape(input)
+      : '';
     return processedInput;
   }
   /**
@@ -103,16 +106,18 @@ export default class Validation {
    * @memberof Validation
    */
   static checkIntegerValidityOf(input) {
-    const processedInput = Validation.isInt(input) ? Validation.escape(input) : '';
+    const processedInput = Validation.isInt(input)
+      ? Validation.escape(input)
+      : '';
     return processedInput;
   }
 
   /**
    * Checks the validity of each user input supplied during user sign up
    * @static
-   * @param {string} _name 
-   * @param {string} _email 
-   * @param {string} _password 
+   * @param {string} _name the name supplied by the user
+   * @param {string} _email the email suplied by the user
+   * @param {string} _password the password supplied by the user
    * @returns {object} validated and formatted output
    * @memberof Validation
    */
@@ -127,9 +132,9 @@ export default class Validation {
   /**
    * Checks the validity of each user input supplied during user updates
    * @static
-   * @param {string} _name 
-   * @param {string} _email 
-   * @param {string} _password 
+   * @param {string} _name the name supplied by the user
+   * @param {string} _email the email suplied by the user
+   * @param {string} _password the password supplied by the user
    * @returns {object} validated and formatted output
    * @memberof Validation
    */
@@ -139,5 +144,75 @@ export default class Validation {
     const password = !Validation.isEmpty(_password) ? _password : false;
     const userData = { name, email, password };
     return (name && email && password) ? userData : false;
+  }
+
+  /**
+   * Checks and gives the appropriate response for the null data
+   * supplied by the user
+   * @static
+   * @param {string} name the name supplied by the user
+   * @param {string} email the email suplied by the user
+   * @param {string} password the password supplied by the user
+   * @returns {string} error message
+   * @memberof Validation
+   */
+  static checkNullDataUser(name, email, password) {
+    const errorMessage = [];
+    if (!email) {
+      errorMessage.push('Email cannot be empty');
+    }
+    if (!Validation.checkEmailValidityOf(email)) {
+      errorMessage.push('Email is invalid');
+    }
+    if (!password) {
+      errorMessage.push('Password cannot be empty');
+    }
+    if (!name) {
+      errorMessage.push('Name field cannot be empty');
+    }
+    return errorMessage;
+  }
+
+  /**
+   * Checks and gives the appropriate response for the null data
+   * supplied by the user
+   * @static
+   * @param {string} email the email suplied by the user
+   * @param {string} password the password supplied by the user
+   * @returns {string} error message
+   * @memberof Validation
+   */
+  static checkNullLogInData(email, password) {
+    const errorMessage = [];
+    if (!email) {
+      errorMessage.push('Email cannot be empty');
+    }
+    if (!Validation.checkEmailValidityOf(email)) {
+      errorMessage.push('Email is invalid');
+    }
+    if (!password) {
+      errorMessage.push('Password cannot be empty');
+    }
+    return errorMessage;
+  }
+
+  /**
+   * Checks and gives the appropriate response for the null data supplied
+   * for the document entry
+   * @static
+   * @param {any} title the title supplied by the user
+   * @param {any} content the content supplied by the user
+   * @returns {string} error message
+   * @memberof Validation
+   */
+  static checkNullDataDocument(title, content) {
+    const errorMessage = [];
+    if (!title) {
+      errorMessage.push('Document title cannot be empty');
+    }
+    if (!content) {
+      errorMessage.push('Document content cannot be empty');
+    }
+    return errorMessage;
   }
 }

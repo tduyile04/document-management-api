@@ -48,8 +48,8 @@ var DocumentsController = function () {
     /**
      * Creates a new document instance and saves it to 
      * the database
-     * @param {any} req request made from the client
-     * @param {any} res response from the server
+     * @param {object} req request made from the client
+     * @param {object} res response from the server
      * @return {object} response object
      */
     value: function createDocument(req, res) {
@@ -57,7 +57,9 @@ var DocumentsController = function () {
       var title = _Validation2.default.checkDataValidityOf(req.body.title);
       var content = _Validation2.default.checkDataValidityOf(req.body.content);
       if (!title || !content) {
-        return res.status(400).json({ message: 'Document title and content cannot be empty' });
+        return res.status(422).json({
+          message: _Validation2.default.checkNullDataDocument(title, content)
+        });
       }
       var documentDetails = {
         title: title,
@@ -73,20 +75,22 @@ var DocumentsController = function () {
         defaults: documentDetails
       }).spread(function (document, created) {
         if (!created) {
-          return res.status(409).json({ message: 'Document with the same title already exists' });
+          return res.status(409).json({
+            message: 'Document with the same title already exists'
+          });
         }
-        return res.status(200).json(document);
+        return res.status(201).json(document);
       }).catch(function () {
         return res.status(400).json({
-          message: 'Error encountered creating the documents. Check if invalid document access'
+          message: 'Error encountered while creating the documents'
         });
       });
     }
     /**
      * Retrieves all document instances published by various
      * authors or users
-     * @param {any} req request made from the client
-     * @param {any} res response from the server
+     * @param {object} req request made from the client
+     * @param {object} res response from the server
      * @returns {object} response object
      */
 
@@ -95,12 +99,13 @@ var DocumentsController = function () {
     value: function retrieveDocuments(req, res) {
       var userDetails = req.decoded;
       var roleId = userDetails.userRole;
+      var id = userDetails.userId;
       if (roleId === _Constants2.default.ADMIN || roleId === _Constants2.default.SUPERADMIN) {
         if (req.query) {
           var offset = req.query.offset || 0,
               limit = req.query.limit || _Constants2.default.MAXIMUM;
           Document.findAndCountAll({ offset: offset, limit: limit }).then(function (documents) {
-            return res.status(200).json(_Helper2.default.listContextDetails(documents, limit, offset, 'Documents'));
+            return res.status(200).json(_Helper2.default.listContextDetails(documents, limit, offset, 'documents'));
           });
         }
       } else {
@@ -112,17 +117,19 @@ var DocumentsController = function () {
           where: {
             $or: [{ access: { $eq: _Constants2.default.PUBLIC } }, {
               $and: [{ access: { $eq: _Constants2.default.ROLE } }, { userRoleId: { $eq: roleId } }] // ends $and
+            }, {
+              $and: [{ access: { $eq: _Constants2.default.PRIVATE } }, { userId: { $eq: id } }] // ends $and
             }] // ends $or
           }
         }).then(function (documents) {
-          return res.status(200).json(_Helper2.default.listContextDetails(documents, _limit, _offset, 'Documents'));
+          return res.status(200).json(_Helper2.default.listContextDetails(documents, _limit, _offset, 'documents'));
         });
       }
     }
     /**
      * Retrieves a single document instance from the database
-     * @param {any} req request made from the client
-     * @param {any} res response from the server
+     * @param {object} req request made from the client
+     * @param {object} res response from the server
      * @returns {object} response object
      */
 
@@ -131,13 +138,14 @@ var DocumentsController = function () {
     value: function retrieveDocument(req, res) {
       var userDetails = req.decoded;
       var roleId = userDetails.userRole;
+      var id = userDetails.userId;
       if (roleId === _Constants2.default.ADMIN || roleId === _Constants2.default.SUPERADMIN) {
-        _Repository2.default.findDataById(req.params.id, Document, 'Document').then(function (document) {
+        _Repository2.default.findDataById(req.params.id, Document, 'documents').then(function (document) {
           return res.status(document.status).json(document.data);
         });
       } else {
-        _Repository2.default.findDataById(req.params.id, Document, 'Document').then(function (document) {
-          if (document.data.access === _Constants2.default.PUBLIC || document.data.access === _Constants2.default.ROLE && document.data.userRoleId === roleId) {
+        _Repository2.default.findDataById(req.params.id, Document, 'documents').then(function (document) {
+          if (document.data.access === _Constants2.default.PUBLIC || document.data.access === _Constants2.default.ROLE && document.data.userRoleId === roleId || document.data.access === _Constants2.default.PRIVATE && document.data.userId === id) {
             return res.status(document.status).json(document.data);
           }
           return res.status(403).json({
@@ -148,8 +156,8 @@ var DocumentsController = function () {
     }
     /**
      * Updates the specified document attribute in the database
-     * @param {any} req request made from the client
-     * @param {any} res response from the server
+     * @param {object} req request made from the client
+     * @param {object} res response from the server
      * @returns {object} response object
      */
 
@@ -163,14 +171,14 @@ var DocumentsController = function () {
       var access = req.body.access;
       var content = req.body.content;
       var updateField = { title: title, content: content, access: access };
-      _Repository2.default.findDataById(req.params.id, Document, 'Document').then(function (document) {
+      _Repository2.default.findDataById(req.params.id, Document, 'documents').then(function (document) {
         if (userId === document.data.userId || roleId === document.data.userRoleId) {
-          _Repository2.default.updateContextDetails(updateField, req.params.id, Document, 'Document').then(function (newDocument) {
+          _Repository2.default.updateContextDetails(updateField, req.params.id, Document, 'documents').then(function (newDocument) {
             res.status(newDocument.status).json(newDocument.data);
           });
         } else {
           res.status(403).json({
-            message: 'You cannot update another user\'s document or a document that does not exist'
+            message: 'You cant update another user\'s doc or a doc that doesnt exist'
           });
         }
       });
@@ -178,8 +186,8 @@ var DocumentsController = function () {
 
     /**
      * Deletes a document instance from the database
-     * @param {any} req request made from the client
-     * @param {any} res response from the server
+     * @param {object} req request made from the client
+     * @param {object} res response from the server
      * @returns {object} response object
      */
 
@@ -189,13 +197,15 @@ var DocumentsController = function () {
       var userDetails = req.decoded;
       var roleId = userDetails.userRole;
       var userId = userDetails.userId;
-      _Repository2.default.findDataById(req.params.id, Document, 'Document').then(function (document) {
+      _Repository2.default.findDataById(req.params.id, Document, 'documents').then(function (document) {
         if (roleId === _Constants2.default.SUPERADMIN || userId === document.data.userId) {
-          _Repository2.default.deleteContextInstance(Document, 'Document', req.params.id).then(function (deletedDocument) {
+          _Repository2.default.deleteContextInstance(Document, 'documents', req.params.id).then(function (deletedDocument) {
             res.status(deletedDocument.status).json(deletedDocument.data);
           });
         } else {
-          res.status(400).json({ message: 'You cannot delete another user\'s document' });
+          res.status(400).json({
+            message: 'You cannot delete another user\'s document'
+          });
         }
       });
     }
@@ -216,46 +226,62 @@ var DocumentsController = function () {
         }
       }).then(function (document) {
         if (document.length === 0) {
-          return res.status(404).json({ message: 'No document found created by this user' });
+          return res.status(404).json({
+            message: 'No document found created by this user'
+          });
         }
         return res.status(200).json(document);
       }).catch(function () {
         return res.status(400).json({
-          message: 'Eror encountered while trying to retrieve the user\'s document'
+          message: 'Eror encountered while retrieving the user\'s document'
         });
       });
     }
     /**
      * Searches for matching user instance from the base
-     * @param {any} req request made from the client
-     * @param {any} res response from the server
+     * @param {object} req request made from the client
+     * @param {object} res response from the server
      * @returns {object} response object
      */
 
   }, {
     key: 'searchDocument',
     value: function searchDocument(req, res) {
+      var userDetails = req.decoded;
+      var roleId = userDetails.userRole;
+      var userId = userDetails.userId;
       var filteredDocumentsList = [];
       var searchQuery = _Validation2.default.checkDataValidityOf(req.query.q);
       Document.findAll({
         where: {
           title: {
-            $like: searchQuery + '%'
+            $like: '%' + searchQuery + '%'
           }
         }
       }).then(function (documents) {
-        if (documents.length === 0) {
-          return res.status(404).json({ message: 'No match found for the search query' });
+        if (roleId === _Constants2.default.REGULAR) {
+          filteredDocumentsList = documents.filter(function (document) {
+            return userId === document.userId;
+          });
+          return res.status(200).json(filteredDocumentsList);
+        } else if (roleId === _Constants2.default.SUPERADMIN || roleId === _Constants2.default.ADMIN) {
+          if (documents.length === 0) {
+            return res.status(404).json({
+              message: 'No match found for the search query'
+            });
+          }
+          documents.forEach(function (document) {
+            filteredDocumentsList.push(document);
+          });
+          return res.status(200).json(filteredDocumentsList);
         }
-        if (documents.length === 1) {
-          return res.status(200).json(documents);
-        }
-        documents.forEach(function (document) {
-          filteredDocumentsList.push(document);
+        return res.status(404).json({
+          message: 'No match found for the search query'
         });
-        return res.status(200).json(filteredDocumentsList);
       }).catch(function () {
-        return res.status(500).json({ message: 'Error occured while searching. Do try again!' });
+        return res.status(500).json({
+          message: 'Error occured while searching. Do try again!'
+        });
       });
     }
   }]);

@@ -28,7 +28,8 @@ var DocumentRoutes = function DocumentRoutes(app) {
   router.get('/documents', _DocumentsController2.default.retrieveDocuments);
   router.get('/documents/:id', _DocumentsController2.default.retrieveDocument);
   router.get('/search/documents', _DocumentsController2.default.searchDocument);
-  router.get('/users/:id/documents/alone', _DocumentsController2.default.retrieveOnlyUserDocuments);
+  router.get('/users/:id/documents/clean', _DocumentsController2.default.retrieveOnlyUserDocuments);
+
   router.put('/documents/:id', _DocumentsController2.default.updateDocument);
   router.delete('/documents/:id', _DocumentsController2.default.deleteDocument);
 };

@@ -12,7 +12,9 @@ const DocumentRoutes = (app) => {
   router.get('/documents', DocumentsController.retrieveDocuments);
   router.get('/documents/:id', DocumentsController.retrieveDocument);
   router.get('/search/documents', DocumentsController.searchDocument);
-  router.get('/users/:id/documents/alone', DocumentsController.retrieveOnlyUserDocuments);
+  router.get('/users/:id/documents/clean',
+    DocumentsController.retrieveOnlyUserDocuments);
+
   router.put('/documents/:id', DocumentsController.updateDocument);
   router.delete('/documents/:id', DocumentsController.deleteDocument);
 };

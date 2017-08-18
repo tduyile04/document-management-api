@@ -14,6 +14,10 @@ var _Constants = require('../constants/Constants');
 
 var _Constants2 = _interopRequireDefault(_Constants);
 
+var _Helper = require('../utils/Helper');
+
+var _Helper2 = _interopRequireDefault(_Helper);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
@@ -62,7 +66,9 @@ var Repository = function () {
                     result = { data: data, status: 200 };
                   }
                 }).catch(function () {
-                  result = { message: 'Error occured while retrieving the data', status: 500 };
+                  result = {
+                    message: 'Error occured while retrieving the data', status: 500
+                  };
                 });
 
               case 3:
@@ -86,10 +92,10 @@ var Repository = function () {
     /**
      * Updates the matching data that equals the id params
      * @static
-     * @param {object} userRequest
-     * @param {object} updateId 
-     * @param {object} model 
-     * @param {string} modelName 
+     * @param {object} userRequest the user details sent
+     * @param {object} updateId the specific id to be updated
+     * @param {object} model the choice model
+     * @param {string} modelName the name of the choice model
      * @returns {object} feedback message
      * @memberof Repository
      */
@@ -139,11 +145,7 @@ var Repository = function () {
 
               case 17:
                 _context2.next = 19;
-                return model.update(updateField, {
-                  where: {
-                    id: updateId
-                  }
-                }).then(function (updatedContext) {
+                return model.update(updateField, { where: { id: updateId } }).then(function (updatedContext) {
                   if (updatedContext[0] === _Constants2.default.UPDATED) {
                     result = {
                       data: { message: modelName + ' has been successfully updated' },
@@ -151,7 +153,9 @@ var Repository = function () {
                     };
                   } else {
                     result = {
-                      data: { message: 'You do not have the permission to perform this action' },
+                      data: {
+                        message: 'You do not have the permission to perform this action'
+                      },
                       status: 403
                     };
                   }
@@ -163,9 +167,30 @@ var Repository = function () {
                 });
 
               case 19:
+                if (!(result.status === 200)) {
+                  _context2.next = 22;
+                  break;
+                }
+
+                _context2.next = 22;
+                return model.findById(updateId).then(function (updatedField) {
+                  result = {
+                    data: _Helper2.default.chooseContext(modelName, updatedField),
+                    status: 200
+                  };
+                }).catch(function () {
+                  result = {
+                    data: {
+                      message: 'Error encoutered while retrieving the updated document'
+                    },
+                    status: 500
+                  };
+                });
+
+              case 22:
                 return _context2.abrupt('return', result);
 
-              case 20:
+              case 23:
               case 'end':
                 return _context2.stop();
             }
@@ -183,10 +208,10 @@ var Repository = function () {
     /**
      * Updates the matching data roles that equals the id params
      * @static
-     * @param {integer} roleId 
-     * @param {integer} updateId 
-     * @param {object} model 
-     * @param {string} modelName 
+     * @param {integer} roleId the id of the users role 
+     * @param {integer} updateId the id to be updated
+     * @param {object} model the choice model
+     * @param {string} modelName the name of the choice model
      * @returns {object} feedback message
      * 
      * @memberof Repository
@@ -217,21 +242,44 @@ var Repository = function () {
                     };
                   } else {
                     result = {
-                      data: { message: 'No matching user was found in the database, No updates made' },
+                      data: {
+                        message: 'No matching user was found, No updates made'
+                      },
                       status: 404
                     };
                   }
                 }).catch(function () {
                   result = {
-                    data: { message: 'Error encoutered while updating...' },
+                    data: { message: 'Error encoutered while updating the user' },
                     status: 500
                   };
                 });
 
               case 3:
+                if (!(result.status === 200)) {
+                  _context3.next = 6;
+                  break;
+                }
+
+                _context3.next = 6;
+                return model.findById(updateId).then(function (updatedField) {
+                  result = {
+                    data: _Helper2.default.chooseContext(modelName, updatedField),
+                    status: 200
+                  };
+                }).catch(function () {
+                  result = {
+                    data: {
+                      message: 'Error encoutered while retrieving the updated document'
+                    },
+                    status: 500
+                  };
+                });
+
+              case 6:
                 return _context3.abrupt('return', result);
 
-              case 4:
+              case 7:
               case 'end':
                 return _context3.stop();
             }
@@ -247,13 +295,12 @@ var Repository = function () {
     }()
 
     /**
-     * 
      * Deletes the matching data that equals the id params
      * @static
-     * @param {object} model 
-     * @param {string} modelName 
-     * @param {integer} deleteId 
-     * @returns {object} feedback message
+     * @param {object} model the choice model
+     * @param {string} modelName the name of the choice model
+     * @param {integer} deleteId the id of the item to be deleted
+     * @returns {object} feedback message from delete operation
      * @memberof Repository
      */
 
@@ -275,18 +322,24 @@ var Repository = function () {
                 }).then(function (deletedContext) {
                   if (deletedContext === _Constants2.default.DELETED) {
                     result = {
-                      data: { message: modelName + ' has been removed from the database successfully' },
+                      data: {
+                        message: modelName + ' has been removed successfully'
+                      },
                       status: 200
                     };
                   } else {
                     result = {
-                      data: { message: 'No matching ' + modelName.toLowerCase() + ' was found in the database' },
+                      data: {
+                        message: 'No matching ' + modelName.toLowerCase() + ' was found'
+                      },
                       status: 404
                     };
                   }
                 }).catch(function () {
                   result = {
-                    data: { message: 'Error encountered while trying to delete ' + modelName.toLowerCase() + ', Please try again' },
+                    data: {
+                      message: 'Error encountered while trying to delete ' + modelName
+                    },
                     status: 500
                   };
                 });

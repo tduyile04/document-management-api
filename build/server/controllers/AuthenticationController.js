@@ -10,10 +10,6 @@ var _jsonwebtoken = require('jsonwebtoken');
 
 var _jsonwebtoken2 = _interopRequireDefault(_jsonwebtoken);
 
-var _localStorage = require('local-storage');
-
-var _localStorage2 = _interopRequireDefault(_localStorage);
-
 var _dotenv = require('dotenv');
 
 var _dotenv2 = _interopRequireDefault(_dotenv);
@@ -41,12 +37,12 @@ var AuthenticationController = function () {
     /**
      * Retrieves the token obtained from the request made from the client
      * @static
-     * @param {string} req request made from the client
+     * @param {object} req request made from the client
      * @returns {string} token obtained from sign up
      * @memberof Authentication
      */
     value: function getTokenFromRequest(req) {
-      var token = req.body.token || req.headers['x-access-token'] || req.headers.Authorization || _localStorage2.default.get('token');
+      var token = req.body.token || req.headers['x-access-token'] || req.headers.Authorization;
       return token;
     }
 
@@ -54,9 +50,9 @@ var AuthenticationController = function () {
      * Checks the authenticaton state of the current user to limit or allow
      * access to the endpoints
      * @static
-     * @param {any} req request made from the client
-     * @param {any} res response from the server
-     * @param {any} next pass action to the next middleware/controller
+     * @param {object} req request made from the client
+     * @param {object} res response from the server
+     * @param {function} next pass action to the next middleware/controller
      * @returns {null} passes action to the next moddleware
      * @memberof Authentication
      */

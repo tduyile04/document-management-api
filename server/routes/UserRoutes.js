@@ -22,9 +22,9 @@ const UserRoutes = (app) => {
   router.use(AuthenticationController.authenticate);
 
   router.get('/users', UsersController.getUsers);
-  router.get('/user/:id', UsersController.getUser);
-  router.put('/user/:id', UsersController.updateUser);
-  router.delete('/user/:id', UsersController.deleteUser);
+  router.get('/users/:id', UsersController.getUser);
+  router.put('/users/:id', UsersController.updateUser);
+  router.delete('/users/:id', UsersController.deleteUser);
   router.get('/search/users/', UsersController.searchUser);
   router.get('/users/:id/documents/', UsersController.retrieveUserDocuments);
 };

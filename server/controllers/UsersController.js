@@ -1,6 +1,5 @@
 import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
-import localStorage from 'local-storage';
 import Validation from '../utils/Validation';
 import Constants from '../constants/Constants';
 import Helper from '../utils/Helper';
@@ -20,8 +19,8 @@ class UsersController {
   /**
    * Creates a new user instance and saves it to 
    * the database
-   * @param {any} req request made from the client
-   * @param {any} res response from the server
+   * @param {object} req request made from the client
+   * @param {object} res response from the server
    * @returns {object} response object
    */
   static signUp(req, res) {
@@ -33,8 +32,9 @@ class UsersController {
       email = validatedUser.email;
       password = validatedUser.password;
     } else {
-      return res.status(400).json({
-        message: 'User input cannot be empty and Email entry must be an email'
+      return res.status(422).json({
+        message: Validation
+          .checkNullDataUser(req.body.name, req.body.email, req.body.password)
       });
     }
     const hashedPassword = Helper.hashPassword(password);
@@ -51,13 +51,17 @@ class UsersController {
       defaults: userDetails
     }).spread((user, created) => {
       if (!created) {
-        return res.status(400).json({ message: 'Email already exists' });
+        return res.status(409).json({ message: 'Email already exists' });
       }
       const token = Helper.getJWT(user.id, user.email, user.roleId);
-      localStorage.set('token', token);
-      return res.status(200).json({
-        success: true,
-        message: 'You have signed up successfully',
+      const userProfile = {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        roleId: user.roleId
+      };
+      return res.status(201).json({
+        user: userProfile,
         token
       });
     })
@@ -69,19 +73,19 @@ class UsersController {
   /**
    * Logs in the creates user instance to the app if
    * successfully signed up
-   * @param {any} req request made from the client
-   * @param {any} res response from the server
+   * @param {object} req request made from the client
+   * @param {object} res response from the server
    * @returns {object} response object
    */
   static logIn(req, res) {
-    const email = Validation.checkEmailValidityOf(req.body.email) ?
-      Validation.checkEmailValidityOf(req.body.email) :
-      false;
+    const email = req.body.email;
     const password = Validation.checkPasswordValidityOf(req.body.password) ?
       Validation.checkPasswordValidityOf(req.body.password) :
-      false;
-    if (!email || !password) {
-      return res.status(400).json({ message: 'Email and password input cannnot be empty' });
+      '';
+    if (!email || !Validation.checkEmailValidityOf(email) || !password) {
+      return res.status(400).json({
+        message: Validation.checkNullLogInData(email, password)
+      });
     }
     return User.findOne({
       where: {
@@ -91,7 +95,6 @@ class UsersController {
       const result = bcrypt.compareSync(password, user.password);
       if (result) {
         const token = Helper.getJWT(user.id, user.email, user.roleId);
-        localStorage.set('token', token);
         const userProfile = {
           id: user.id,
           name: user.name,
@@ -104,15 +107,15 @@ class UsersController {
       }
     }).catch(() => {
       res.status(500).json({
-        message: 'Problems with either the email or password, Check and try again'
+        message: 'Problems with either the email or password, Try again'
       });
     });
   }
   /**
    * Shows a detail of all the users successfully signed up on the 
    * database
-   * @param {any} req request made from the client
-   * @param {any} res response from the server
+   * @param {object} req request made from the client
+   * @param {object} res response from the server
    * @returns {object} response object
    */
   static getUsers(req, res) {
@@ -125,18 +128,22 @@ class UsersController {
     }
     if (req.query) {
       const offset = req.query && req.query.offset ? req.query.offset : 0,
-        limit = req.query && req.query.limit ? req.query.limit : Constants.MAXIMUM;
+        limit = req.query && req.query.limit
+          ? req.query.limit
+          : Constants.MAXIMUM;
       return User.findAndCountAll({ offset, limit })
         .then((users) => {
-          res.status(200).json(Helper.listContextDetails(users, limit, offset, 'User'));
+          res.status(200).json(
+            Helper.listContextDetails(users, limit, offset, 'users')
+          );
         });
     }
   }
 
   /**
    * Retrieves a specific user data from the database
-   * @param {any} req request made from the client
-   * @param {any} res response from the server
+   * @param {object} req request made from the client
+   * @param {object} res response from the server
    * @returns {object} response object
    */
   static getUser(req, res) {
@@ -147,51 +154,67 @@ class UsersController {
         message: 'You do not have the permission to perform this action'
       });
     }
-    Repository.findDataById(req.params.id, User, 'User').then(user => res.status(user.status).json(user.data));
+    Repository
+      .findDataById(req.params.id, User, 'users')
+      .then(user => res.status(user.status).json(user.data));
   }
 
   /**
    * Updates a specific user data attribute in the database
-   * @param {any} req request made from the client
-   * @param {any} res response from the server
+   * @param {object} req request made from the client
+   * @param {object} res response from the server
    * @returns {object} response object
    */
   static updateUser(req, res) {
     const userDetails = req.decoded;
-    if (userDetails.userRole !== Constants.SUPERADMIN) {
+    const userId = userDetails.userId;
+    const roleId = userDetails.userRole;
+    if (userId == req.params.id) {
       const validatedUser = Validation
         .validateUpdateUser(req.body.name, req.body.email, req.body.password);
       if (!validatedUser) {
-        return res.status(400).json({ message: 'Empty fields not allowed, fill them' });
+        return res.status(422).json(
+          { message: 'Empty fields not allowed, fill them' }
+        );
       }
+      if (req.body.roleId && roleId !== Constants.SUPERADMIN) {
+        return res.status(403).json(
+          { message: 'Only a superadmin can change user roles' }
+        );
+      }
+      const id = req.params.id;
       const name = validatedUser.name;
       const email = validatedUser.email;
       const password = validatedUser.password;
-      const id = req.params.id;
       const hashedPassword = Helper.hashPassword(password);
       const updateField = {
         name,
         email,
         password: hashedPassword
       };
-      if (req.body.roleId) {
-        return res.status(401).json({ message: 'You do not have admin priviledges' });
-      } else if (userDetails.userId == req.params.id) {
-        Repository.updateContextDetails(updateField, id, User, 'User')
-          .then(user => res.status(user.status).json(user.data));
-      } else {
-        return res.status(401).json({ message: 'You cannot edit another user\'s document' });
+      Repository.updateContextDetails(updateField, id, User, 'users')
+        .then((user) => {
+          res.status(user.status).json(user.data);
+        });
+    } else if (userId !== req.params.id && roleId === Constants.SUPERADMIN) {
+      if (req.body.name || req.body.email || req.body.password) {
+        return res.status(403).json({
+          message: 'Editing another user information is only done by the user'
+        });
       }
-    } else {
-      Repository.updateUserRoles(req.body.roleId, req.params.id, User, 'User')
+      Repository.updateUserRoles(req.body.roleId, req.params.id, User, 'users')
         .then(user => res.status(user.status).json(user.data));
+    } else {
+      return res.status(403).json(
+        { message: 'You cannot edit another user\'s details' }
+      );
     }
   }
 
   /**
    * Deletes a user instance from the database
-   * @param {any} req request made from the client
-   * @param {any} res response from the server
+   * @param {object} req request made from the client
+   * @param {object} res response from the server
    * @returns {object} response object
    */
   static deleteUser(req, res) {
@@ -201,13 +224,13 @@ class UsersController {
         message: 'You do not have the permission to perform this action'
       });
     }
-    Repository.deleteContextInstance(User, 'User', req.params.id)
+    Repository.deleteContextInstance(User, 'users', req.params.id)
       .then(user => res.status(user.status).json(user.data));
   }
   /**
    * Searches for matching user instance from the base
-   * @param {any} req request made from the client
-   * @param {any} res response from the server
+   * @param {object} req request made from the client
+   * @param {object} res response from the server
    * @returns {object} response object
    */
   static searchUser(req, res) {
@@ -224,12 +247,12 @@ class UsersController {
         $or: [
           {
             name: {
-              $like: `${req.query.q}%`
+              $like: `%${req.query.q}%`
             }
           },
           {
             email: {
-              $like: `${req.query.q}%`
+              $like: `%${req.query.q}%`
             }
           }
         ]
@@ -237,10 +260,19 @@ class UsersController {
     })
       .then((users) => {
         if (users.length === 0) {
-          return res.status(404).json({ message: 'No match found for the search query' });
+          return res.status(404).json({
+            message: 'No match found for the search query'
+          });
         }
         users.forEach((user) => {
-          filteredUsersList.push(user);
+          filteredUsersList.push({
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            roleId: user.roleId,
+            createdAt: user.createdAt,
+            updatedAt: user.updatedAt
+          });
         });
         return res.status(200).json(filteredUsersList);
       })
@@ -252,8 +284,8 @@ class UsersController {
    * Retrieves all documents instance for a requested user instance,
    * includes the documents in the user details
    * @static
-   * @param {any} req request made from the client
-   * @param {any} res response from the server
+   * @param {object} req request made from the client
+   * @param {object} res response from the server
    * @returns {object} response object
    * @memberof UsersController
    */
@@ -278,15 +310,19 @@ class UsersController {
                 res.status(200).json(allUser);
               })
               .catch(() => {
-                res.status(400).json({ message: 'Error while getting data from the database' });
+                res.status(400).json({
+                  message: 'Error while getting data from the database'
+                });
               });
           } else {
             res.status(400).json({
-              message: 'You do not have admin privledges to view this user document'
+              message: 'Requires admin access to view this user document'
             });
           }
         } else {
-          res.status(400).json({ message: 'The user does not exist in the database' });
+          res.status(400).json({
+            message: 'The user does not exist in the database'
+          });
         }
       });
   }
@@ -295,13 +331,12 @@ class UsersController {
    * Removes the token from the local storage hence ending its session
    * abruptly
    * @static
-   * @param {any} req request made from the client
-   * @param {any} res response from the server
+   * @param {object} req request made from the client
+   * @param {object} res response from the server
    * @returns {object} response object
    * @memberof UsersController
    */
   static logout(req, res) {
-    localStorage.clear();
     res.status(200).json({ message: 'User successfully logged out' });
   }
 }

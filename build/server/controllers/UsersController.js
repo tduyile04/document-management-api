@@ -14,10 +14,6 @@ var _dotenv = require('dotenv');
 
 var _dotenv2 = _interopRequireDefault(_dotenv);
 
-var _localStorage = require('local-storage');
-
-var _localStorage2 = _interopRequireDefault(_localStorage);
-
 var _Validation = require('../utils/Validation');
 
 var _Validation2 = _interopRequireDefault(_Validation);
@@ -63,8 +59,8 @@ var UsersController = function () {
     /**
      * Creates a new user instance and saves it to 
      * the database
-     * @param {any} req request made from the client
-     * @param {any} res response from the server
+     * @param {object} req request made from the client
+     * @param {object} res response from the server
      * @returns {object} response object
      */
     value: function signUp(req, res) {
@@ -77,8 +73,8 @@ var UsersController = function () {
         email = validatedUser.email;
         password = validatedUser.password;
       } else {
-        return res.status(400).json({
-          message: 'User input cannot be empty and Email entry must be an email'
+        return res.status(422).json({
+          message: _Validation2.default.checkNullDataUser(req.body.name, req.body.email, req.body.password)
         });
       }
       var hashedPassword = _Helper2.default.hashPassword(password);
@@ -95,13 +91,17 @@ var UsersController = function () {
         defaults: userDetails
       }).spread(function (user, created) {
         if (!created) {
-          return res.status(400).json({ message: 'Email already exists' });
+          return res.status(409).json({ message: 'Email already exists' });
         }
         var token = _Helper2.default.getJWT(user.id, user.email, user.roleId);
-        _localStorage2.default.set('token', token);
-        return res.status(200).json({
-          success: true,
-          message: 'You have signed up successfully',
+        var userProfile = {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          roleId: user.roleId
+        };
+        return res.status(201).json({
+          user: userProfile,
           token: token
         });
       }).catch(function (error) {
@@ -114,18 +114,20 @@ var UsersController = function () {
     /**
      * Logs in the creates user instance to the app if
      * successfully signed up
-     * @param {any} req request made from the client
-     * @param {any} res response from the server
+     * @param {object} req request made from the client
+     * @param {object} res response from the server
      * @returns {object} response object
      */
 
   }, {
     key: 'logIn',
     value: function logIn(req, res) {
-      var email = _Validation2.default.checkEmailValidityOf(req.body.email) ? _Validation2.default.checkEmailValidityOf(req.body.email) : false;
-      var password = _Validation2.default.checkPasswordValidityOf(req.body.password) ? _Validation2.default.checkPasswordValidityOf(req.body.password) : false;
-      if (!email || !password) {
-        return res.status(400).json({ message: 'Email and password input cannnot be empty' });
+      var email = req.body.email;
+      var password = _Validation2.default.checkPasswordValidityOf(req.body.password) ? _Validation2.default.checkPasswordValidityOf(req.body.password) : '';
+      if (!email || !_Validation2.default.checkEmailValidityOf(email) || !password) {
+        return res.status(400).json({
+          message: _Validation2.default.checkNullLogInData(email, password)
+        });
       }
       return User.findOne({
         where: {
@@ -135,7 +137,6 @@ var UsersController = function () {
         var result = _bcrypt2.default.compareSync(password, user.password);
         if (result) {
           var token = _Helper2.default.getJWT(user.id, user.email, user.roleId);
-          _localStorage2.default.set('token', token);
           var userProfile = {
             id: user.id,
             name: user.name,
@@ -148,15 +149,15 @@ var UsersController = function () {
         }
       }).catch(function () {
         res.status(500).json({
-          message: 'Problems with either the email or password, Check and try again'
+          message: 'Problems with either the email or password, Try again'
         });
       });
     }
     /**
      * Shows a detail of all the users successfully signed up on the 
      * database
-     * @param {any} req request made from the client
-     * @param {any} res response from the server
+     * @param {object} req request made from the client
+     * @param {object} res response from the server
      * @returns {object} response object
      */
 
@@ -173,15 +174,15 @@ var UsersController = function () {
         var offset = req.query && req.query.offset ? req.query.offset : 0,
             limit = req.query && req.query.limit ? req.query.limit : _Constants2.default.MAXIMUM;
         return User.findAndCountAll({ offset: offset, limit: limit }).then(function (users) {
-          res.status(200).json(_Helper2.default.listContextDetails(users, limit, offset, 'User'));
+          res.status(200).json(_Helper2.default.listContextDetails(users, limit, offset, 'users'));
         });
       }
     }
 
     /**
      * Retrieves a specific user data from the database
-     * @param {any} req request made from the client
-     * @param {any} res response from the server
+     * @param {object} req request made from the client
+     * @param {object} res response from the server
      * @returns {object} response object
      */
 
@@ -194,15 +195,15 @@ var UsersController = function () {
           message: 'You do not have the permission to perform this action'
         });
       }
-      _Repository2.default.findDataById(req.params.id, User, 'User').then(function (user) {
+      _Repository2.default.findDataById(req.params.id, User, 'users').then(function (user) {
         return res.status(user.status).json(user.data);
       });
     }
 
     /**
      * Updates a specific user data attribute in the database
-     * @param {any} req request made from the client
-     * @param {any} res response from the server
+     * @param {object} req request made from the client
+     * @param {object} res response from the server
      * @returns {object} response object
      */
 
@@ -210,41 +211,47 @@ var UsersController = function () {
     key: 'updateUser',
     value: function updateUser(req, res) {
       var userDetails = req.decoded;
-      if (userDetails.userRole !== _Constants2.default.SUPERADMIN) {
+      var userId = userDetails.userId;
+      var roleId = userDetails.userRole;
+      if (userId == req.params.id) {
         var validatedUser = _Validation2.default.validateUpdateUser(req.body.name, req.body.email, req.body.password);
         if (!validatedUser) {
-          return res.status(400).json({ message: 'Empty fields not allowed, fill them' });
+          return res.status(422).json({ message: 'Empty fields not allowed, fill them' });
         }
+        if (req.body.roleId && roleId !== _Constants2.default.SUPERADMIN) {
+          return res.status(403).json({ message: 'Only a superadmin can change user roles' });
+        }
+        var id = req.params.id;
         var name = validatedUser.name;
         var email = validatedUser.email;
         var password = validatedUser.password;
-        var id = req.params.id;
         var hashedPassword = _Helper2.default.hashPassword(password);
         var updateField = {
           name: name,
           email: email,
           password: hashedPassword
         };
-        if (req.body.roleId) {
-          return res.status(401).json({ message: 'You do not have admin priviledges' });
-        } else if (userDetails.userId == req.params.id) {
-          _Repository2.default.updateContextDetails(updateField, id, User, 'User').then(function (user) {
-            return res.status(user.status).json(user.data);
+        _Repository2.default.updateContextDetails(updateField, id, User, 'users').then(function (user) {
+          res.status(user.status).json(user.data);
+        });
+      } else if (userId !== req.params.id && roleId === _Constants2.default.SUPERADMIN) {
+        if (req.body.name || req.body.email || req.body.password) {
+          return res.status(403).json({
+            message: 'Editing another user information is only done by the user'
           });
-        } else {
-          return res.status(401).json({ message: 'You cannot edit another user\'s document' });
         }
-      } else {
-        _Repository2.default.updateUserRoles(req.body.roleId, req.params.id, User, 'User').then(function (user) {
+        _Repository2.default.updateUserRoles(req.body.roleId, req.params.id, User, 'users').then(function (user) {
           return res.status(user.status).json(user.data);
         });
+      } else {
+        return res.status(403).json({ message: 'You cannot edit another user\'s details' });
       }
     }
 
     /**
      * Deletes a user instance from the database
-     * @param {any} req request made from the client
-     * @param {any} res response from the server
+     * @param {object} req request made from the client
+     * @param {object} res response from the server
      * @returns {object} response object
      */
 
@@ -257,14 +264,14 @@ var UsersController = function () {
           message: 'You do not have the permission to perform this action'
         });
       }
-      _Repository2.default.deleteContextInstance(User, 'User', req.params.id).then(function (user) {
+      _Repository2.default.deleteContextInstance(User, 'users', req.params.id).then(function (user) {
         return res.status(user.status).json(user.data);
       });
     }
     /**
      * Searches for matching user instance from the base
-     * @param {any} req request made from the client
-     * @param {any} res response from the server
+     * @param {object} req request made from the client
+     * @param {object} res response from the server
      * @returns {object} response object
      */
 
@@ -282,20 +289,29 @@ var UsersController = function () {
         where: {
           $or: [{
             name: {
-              $like: req.query.q + '%'
+              $like: '%' + req.query.q + '%'
             }
           }, {
             email: {
-              $like: req.query.q + '%'
+              $like: '%' + req.query.q + '%'
             }
           }]
         }
       }).then(function (users) {
         if (users.length === 0) {
-          return res.status(404).json({ message: 'No match found for the search query' });
+          return res.status(404).json({
+            message: 'No match found for the search query'
+          });
         }
         users.forEach(function (user) {
-          filteredUsersList.push(user);
+          filteredUsersList.push({
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            roleId: user.roleId,
+            createdAt: user.createdAt,
+            updatedAt: user.updatedAt
+          });
         });
         return res.status(200).json(filteredUsersList);
       }).catch(function () {
@@ -308,8 +324,8 @@ var UsersController = function () {
      * Retrieves all documents instance for a requested user instance,
      * includes the documents in the user details
      * @static
-     * @param {any} req request made from the client
-     * @param {any} res response from the server
+     * @param {object} req request made from the client
+     * @param {object} res response from the server
      * @returns {object} response object
      * @memberof UsersController
      */
@@ -333,15 +349,19 @@ var UsersController = function () {
             }).then(function (allUser) {
               res.status(200).json(allUser);
             }).catch(function () {
-              res.status(400).json({ message: 'Error while getting data from the database' });
+              res.status(400).json({
+                message: 'Error while getting data from the database'
+              });
             });
           } else {
             res.status(400).json({
-              message: 'You do not have admin privledges to view this user document'
+              message: 'Requires admin access to view this user document'
             });
           }
         } else {
-          res.status(400).json({ message: 'The user does not exist in the database' });
+          res.status(400).json({
+            message: 'The user does not exist in the database'
+          });
         }
       });
     }
@@ -350,8 +370,8 @@ var UsersController = function () {
      * Removes the token from the local storage hence ending its session
      * abruptly
      * @static
-     * @param {any} req request made from the client
-     * @param {any} res response from the server
+     * @param {object} req request made from the client
+     * @param {object} res response from the server
      * @returns {object} response object
      * @memberof UsersController
      */
@@ -359,7 +379,6 @@ var UsersController = function () {
   }, {
     key: 'logout',
     value: function logout(req, res) {
-      _localStorage2.default.clear();
       res.status(200).json({ message: 'User successfully logged out' });
     }
   }]);

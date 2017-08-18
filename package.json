@@ -10,7 +10,7 @@
     "postinstall": "gulp build",
     "start": "NODE_ENV=production node ./build/app --env production",
     "dev": "gulp",
-    "test": "NODE_ENV=test gulp build --env test && nyc --reporter=html --reporter=text --env test mocha ./build/spec/**/*.js --timeout=3000",
+    "test": "NODE_ENV=test gulp build --env test && nyc --reporter=html --reporter=text --env test mocha ./build/spec/**/*.js --timeout=50000",
     "coverage": "NODE_ENV=test nyc report --reporter=text-lcov | coveralls"
   },
   "repository": {

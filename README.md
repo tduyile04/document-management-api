@@ -2,6 +2,10 @@
 [![Build Status](https://travis-ci.org/tolupatrick004/document-management-api.svg?branch=staging)](https://travis-ci.org/tolupatrick004/document-management-api)
 [![Code Climate](https://codeclimate.com/github/tolupatrick004/document-management-api/badges/gpa.svg)](https://codeclimate.com/github/tolupatrick004/document-management-api)
 
+### Introduction
+
+The Document Management API is a document management api that opens up access to manage user, user roles and documents management. It provides an authentication middleware to restrict access to certain endpoints to protect privacy and enhance information security.
+
 
 ### Technologies Used
 
@@ -14,8 +18,8 @@ Local Development
 
 ### Prerequisites includes
 
-Postgresql and
-Node.js >= v8.0.0.
+- [Postgresql](https://www.postgresql.org/) and
+-  [Node.js](http://nodejs.org/) >= v8.0.0.
 
 ### Project Dependencies
 
@@ -89,64 +93,56 @@ Users are assigned a token when signup or signin. This token is then used for su
 ### Below are the API endpoints and their functions
 
 EndPoint Functionality
-**POST** /api/v1/users/login	Logs a user in.
 
-**POST** /api/v1/users/	Creates a new user.
+---------------------------------------------------------------------------------------
 
-**GET** /api/v1/users/	Find matching instances of user.
+**POST** /api/v1/users/ | login	Logs a user in.
 
-**GET** /api/v1/users-docs/	Find matching instances of users and documents
+**POST** /api/v1/users/ | 	Creates a new user.
 
-**GET** /api/v1/users/	Find user.
+**GET** /api/v1/users/ | 	Find matching instances of user.
 
-**PUT** /api/v1/users/	Update user attributes.
+**GET** /api/v1/users-docs/ | 	Find matching instances of users and documents
 
-**DELETE** /api/v1/users/	Delete user.
+**GET** /api/v1/users/ | 	Find user.
 
-**POST** /api/v1/documents/	Creates a new document instance.
+**PUT** /api/v1/users/ | 	Update user attributes.
 
-**POST** /api/v1/roles/	Creates a new role instance.
+**DELETE** /api/v1/users/ | Delete user.
 
-**GET** /api/v1/roles/	Find matching instances of role
+**POST** /api/v1/documents/ |	Creates a new document instance.
 
-**GET** /api/v1/roles-users/	Find matching instances of roles and users
+**GET** /api/v1/documents/ |	Find matching instances of document.
 
-**GET** /api/v1/documents/	Find matching instances of document.
+**GET**  /api/v1/documents/ |	Find document.
 
-**GET** /api/v1/documents/	Find document.
+**PUT**  /api/v1/documents/ |	Update document attributes.
 
-**PUT** /api/v1/documents/	Update document attributes.
+**DELETE** /api/v1/documents/ |	Delete document.
 
-**DELETE** /api/v1/documents/	Delete document.
+**GET**  /api/v1/users//documents | 	Find all documents belonging to the user.
 
-**GET** /api/v1/users//documents	Find all documents belonging to the user.
+**GET**  /api/v1/search/users/ |	Gets all users with username, firstname or lastname matching or containing the search term
 
-**GET** /api/v1/search/users/	Gets all users with username, firstname or lastname matching or containing the search term
+**GET** /api/v1/search/documents/  | 	Gets all documents with title or content matching or containing the search term
 
-**GET** /api/v1/search/documents/	Gets all documents with title or content matching or containing the search term
+**GET** /api/v1/users/page/?limit={integer}&offset={integer}  |	Pagination for users.
 
-**GET** /api/v1/users/page/?limit={integer}&offset={integer}	Pagination for users.
-
-**GET** /api/v1/documents/page/?limit={integer}&offset={integer}	Pagination for docs.
+**GET** /api/v1/documents/page/?limit={integer}&offset={integer}  |	Pagination for docs.
 
 ### How to contribute
 
 Contributions are a vital part to the growth of the project. If any feature strikes you as stale and you know to make it better, follow these simple steps:
 
-Fork the project
+Clone a copy of the project
 
-Create a branch from the base branch.
+Add your changes/contribution to your local copy
 
-Make some commits to improve the project.
+Commit changes to the project using the convention in the WIKI
 
-Push this branch to your GitHub project.
+Open a Pull Request on GitHub following the git workflow in the WIKI.
 
-Open a Pull Request on GitHub.
-
-Discuss, and optionally continue committing.
-
-The project owner merges or closes the Pull Request.
-
+If valuable to the project furtherance, It would be merged and appreciated.
 
 ### API Documentation
 

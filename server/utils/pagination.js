@@ -16,7 +16,9 @@ export default class Pagination {
    * @memberof Pagination
    */
   static getPageSize(limit) {
-    const newlimit = limit && typeof limit !== 'object' ? limit : Constants.DEFAULT;
+    const newlimit = limit && typeof limit !== 'object'
+      ? limit
+      : Constants.DEFAULT;
     if (newlimit < 1) {
       return Constants.MAXIMUM;
     }
@@ -33,12 +35,16 @@ export default class Pagination {
    * @memberof Pagination
    */
   static getPageCount(totalDataCount, limit) {
-    const newTotalDataCount = totalDataCount && totalDataCount > 0 ? totalDataCount : 0;
+    const newTotalDataCount = totalDataCount && totalDataCount > 0
+      ? totalDataCount
+      : 0;
     const newlimit = limit && limit > 0 ? limit : Constants.MAXIMUM;
     if (newTotalDataCount === 0) {
       return Constants.UNIT;
     }
-    const result = Math.ceil(newTotalDataCount / Pagination.getPageSize(newlimit));
+    const result = Math.ceil(
+      newTotalDataCount / Pagination.getPageSize(newlimit)
+    );
     if (result === 0) {
       return Constants.UNIT;
     }
