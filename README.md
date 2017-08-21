@@ -92,42 +92,24 @@ Users are assigned a token when signup or signin. This token is then used for su
 
 ### Below are the API endpoints and their functions
 
-EndPoint Functionality
-
----------------------------------------------------------------------------------------
-
+ Endpoint           |  Functionality
+------------------- | ----------------------------------
 **POST** /api/v1/users/ | login	Logs a user in.
-
 **POST** /api/v1/users/ | 	Creates a new user.
-
 **GET** /api/v1/users/ | 	Find matching instances of user.
-
 **GET** /api/v1/users-docs/ | 	Find matching instances of users and documents
-
 **GET** /api/v1/users/ | 	Find user.
-
 **PUT** /api/v1/users/ | 	Update user attributes.
-
 **DELETE** /api/v1/users/ | Delete user.
-
 **POST** /api/v1/documents/ |	Creates a new document instance.
-
 **GET** /api/v1/documents/ |	Find matching instances of document.
-
 **GET**  /api/v1/documents/ |	Find document.
-
 **PUT**  /api/v1/documents/ |	Update document attributes.
-
 **DELETE** /api/v1/documents/ |	Delete document.
-
 **GET**  /api/v1/users//documents | 	Find all documents belonging to the user.
-
 **GET**  /api/v1/search/users/ |	Gets all users with username, firstname or lastname matching or containing the search term
-
 **GET** /api/v1/search/documents/  | 	Gets all documents with title or content matching or containing the search term
-
 **GET** /api/v1/users/page/?limit={integer}&offset={integer}  |	Pagination for users.
-
 **GET** /api/v1/documents/page/?limit={integer}&offset={integer}  |	Pagination for docs.
 
 ### How to contribute
