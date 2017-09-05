@@ -128,7 +128,7 @@ If valuable to the project furtherance, It would be merged and appreciated.
 
 ### API Documentation
 
-The API documentation is found at the homepage of the hosted API https://edocumentmgtapi.herokuapp.com/
+The API documentation is found at the homepage of the hosted API https://edocsapi.herokuapp.com/
 
 ### Limitations
 
