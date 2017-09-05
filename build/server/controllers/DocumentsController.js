@@ -57,8 +57,8 @@ var DocumentsController = function () {
       var title = _Validation2.default.checkDataValidityOf(req.body.title);
       var content = _Validation2.default.checkDataValidityOf(req.body.content);
       if (!title || !content) {
-        return res.status(422).json({
-          message: _Validation2.default.checkNullDataDocument(title, content)
+        return res.status(400).json({
+          message: _Validation2.default.checkCreateDocumentValidity(title, content)
         });
       }
       var documentDetails = {
@@ -81,7 +81,7 @@ var DocumentsController = function () {
         }
         return res.status(201).json(document);
       }).catch(function () {
-        return res.status(400).json({
+        return res.status(500).json({
           message: 'Error encountered while creating the documents'
         });
       });
@@ -102,15 +102,15 @@ var DocumentsController = function () {
       var id = userDetails.userId;
       if (roleId === _Constants2.default.ADMIN || roleId === _Constants2.default.SUPERADMIN) {
         if (req.query) {
-          var offset = req.query.offset || 0,
-              limit = req.query.limit || _Constants2.default.MAXIMUM;
+          var offset = req.query.offset || 0;
+          var limit = req.query.limit || _Constants2.default.MAXIMUM;
           Document.findAndCountAll({ offset: offset, limit: limit }).then(function (documents) {
             return res.status(200).json(_Helper2.default.listContextDetails(documents, limit, offset, 'documents'));
           });
         }
       } else {
-        var _offset = req.query && req.query.offset ? req.query.offset : 0,
-            _limit = req.query && req.query.limit ? req.query.limit : _Constants2.default.MAXIMUM;
+        var _offset = req.query && req.query.offset ? req.query.offset : 0;
+        var _limit = req.query && req.query.limit ? req.query.limit : _Constants2.default.MAXIMUM;
         Document.findAndCountAll({
           offset: _offset,
           limit: _limit,
@@ -123,6 +123,10 @@ var DocumentsController = function () {
           }
         }).then(function (documents) {
           return res.status(200).json(_Helper2.default.listContextDetails(documents, _limit, _offset, 'documents'));
+        }).catch(function () {
+          res.status(500).json({
+            message: 'Error encountered retrieving all documents'
+          });
         });
       }
     }
@@ -170,7 +174,11 @@ var DocumentsController = function () {
       var title = req.body.title;
       var access = req.body.access;
       var content = req.body.content;
-      var updateField = { title: title, content: content, access: access };
+      var updateField = {
+        title: title,
+        content: content,
+        access: access
+      };
       _Repository2.default.findDataById(req.params.id, Document, 'documents').then(function (document) {
         if (userId === document.data.userId || roleId === document.data.userRoleId) {
           _Repository2.default.updateContextDetails(updateField, req.params.id, Document, 'documents').then(function (newDocument) {
@@ -232,7 +240,7 @@ var DocumentsController = function () {
         }
         return res.status(200).json(document);
       }).catch(function () {
-        return res.status(400).json({
+        return res.status(500).json({
           message: 'Eror encountered while retrieving the user\'s document'
         });
       });

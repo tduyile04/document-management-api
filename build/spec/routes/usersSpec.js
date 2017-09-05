@@ -16,10 +16,6 @@ var _bcrypt = require('bcrypt');
 
 var _bcrypt2 = _interopRequireDefault(_bcrypt);
 
-var _localStorage = require('local-storage');
-
-var _localStorage2 = _interopRequireDefault(_localStorage);
-
 var _app = require('../../app');
 
 var _app2 = _interopRequireDefault(_app);
@@ -50,7 +46,6 @@ _chai2.default.use(_chaiHttp2.default);
 
 describe('Users integration tests for the user endpoint', function () {
   beforeEach(function (done) {
-    _localStorage2.default.clear();
     User.destroy({
       where: {},
       truncate: true,
@@ -91,7 +86,7 @@ describe('Users integration tests for the user endpoint', function () {
     it('should display an error message when user enters no name', function (done) {
       var noNameUser = _faker2.default.signUp.noNameUser;
       _chai2.default.request(_app2.default).post('/api/v1/users').send(noNameUser).end(function (err, res) {
-        res.should.have.status(422);
+        res.should.have.status(400);
         res.body.message.should.be.a('array');
         res.body.message.should.be.eql(['Name field cannot be empty']);
         done();
@@ -100,7 +95,7 @@ describe('Users integration tests for the user endpoint', function () {
     it('should display an error message when user enters no input entry', function (done) {
       var nullUser = _faker2.default.signUp.nullUser;
       _chai2.default.request(_app2.default).post('/api/v1/users').send(nullUser).end(function (err, res) {
-        res.should.have.status(422);
+        res.should.have.status(400);
         res.body.should.have.property('message');
         res.body.message.should.be.a('array');
         res.body.message.should.be.eql(['Email cannot be empty', 'Email is invalid', 'Password cannot be empty', 'Name field cannot be empty']);
@@ -137,7 +132,7 @@ describe('Users integration tests for the user endpoint', function () {
     });
     it('should not be able to access authenticated routes', function (done) {
       _chai2.default.request(_app2.default).get('/api/v1/users/').end(function (err, res) {
-        res.should.have.status(400);
+        res.should.have.status(401);
         res.body.should.be.a('object');
         res.body.should.have.property('message');
         res.body.should.have.property('success');
@@ -290,7 +285,7 @@ describe('Users integration tests for the user endpoint', function () {
       });
     });
     it('should give a message if user not found when queried by an admin', function (done) {
-      _chai2.default.request(_app2.default).get('/api/v1/users/2').set('x-access-token', adminToken).end(function (err, res) {
+      _chai2.default.request(_app2.default).get('/api/v1/users/100').set('x-access-token', adminToken).end(function (err, res) {
         res.should.have.status(404);
         res.body.should.have.property('message');
         res.body.message.should.be.eql('users does not exist in the database');
@@ -303,8 +298,6 @@ describe('Users integration tests for the user endpoint', function () {
         res.body.should.be.a('object');
         res.body.should.have.property('name').eql('superadmin');
         res.body.should.have.property('email').eql('superadmin@random.com');
-        res.body.should.have.property('password');
-        res.body.password.should.be.a('string');
         done();
       });
     });

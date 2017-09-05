@@ -19,7 +19,7 @@ app.use('/', express.static(path.resolve(__dirname, './../public')));
 UserRoutes(app);
 DocumentRoutes(app);
 
-app.get('*', (req, res) => {
+app.use('*', (req, res) => {
   res.status(200).sendFile(
     path.resolve(__dirname, './../public', 'index.html')
   );

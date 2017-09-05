@@ -57,7 +57,7 @@ var UsersController = function () {
     key: 'signUp',
 
     /**
-     * Creates a new user instance and saves it to 
+     * Creates a new user instance and saves it to
      * the database
      * @param {object} req request made from the client
      * @param {object} res response from the server
@@ -65,16 +65,16 @@ var UsersController = function () {
      */
     value: function signUp(req, res) {
       var validatedUser = _Validation2.default.validateSignUp(req.body.name, req.body.email, req.body.password);
-      var name = void 0,
-          email = void 0,
-          password = void 0;
+      var name = void 0;
+      var email = void 0;
+      var password = void 0;
       if (validatedUser) {
         name = validatedUser.name;
         email = validatedUser.email;
         password = validatedUser.password;
       } else {
-        return res.status(422).json({
-          message: _Validation2.default.checkNullDataUser(req.body.name, req.body.email, req.body.password)
+        return res.status(400).json({
+          message: _Validation2.default.checkSignupValidity(req.body.name, req.body.email, req.body.password)
         });
       }
       var hashedPassword = _Helper2.default.hashPassword(password);
@@ -104,10 +104,9 @@ var UsersController = function () {
           user: userProfile,
           token: token
         });
-      }).catch(function (error) {
+      }).catch(function () {
         return res.status(500).json({
-          message: 'Error signing up user, check if invalid role value',
-          error: error
+          message: 'Error signing up user, check if invalid role value'
         });
       });
     }
@@ -126,7 +125,7 @@ var UsersController = function () {
       var password = _Validation2.default.checkPasswordValidityOf(req.body.password) ? _Validation2.default.checkPasswordValidityOf(req.body.password) : '';
       if (!email || !_Validation2.default.checkEmailValidityOf(email) || !password) {
         return res.status(400).json({
-          message: _Validation2.default.checkNullLogInData(email, password)
+          message: _Validation2.default.checkLogInValidity(email, password)
         });
       }
       return User.findOne({
@@ -154,7 +153,7 @@ var UsersController = function () {
       });
     }
     /**
-     * Shows a detail of all the users successfully signed up on the 
+     * Shows a detail of all the users successfully signed up on the
      * database
      * @param {object} req request made from the client
      * @param {object} res response from the server
@@ -171,10 +170,14 @@ var UsersController = function () {
         });
       }
       if (req.query) {
-        var offset = req.query && req.query.offset ? req.query.offset : 0,
-            limit = req.query && req.query.limit ? req.query.limit : _Constants2.default.MAXIMUM;
+        var offset = req.query && req.query.offset ? req.query.offset : 0;
+        var limit = req.query && req.query.limit ? req.query.limit : _Constants2.default.MAXIMUM;
         return User.findAndCountAll({ offset: offset, limit: limit }).then(function (users) {
           res.status(200).json(_Helper2.default.listContextDetails(users, limit, offset, 'users'));
+        }).catch(function () {
+          res.status(500).json({
+            message: 'Problems retrieving the user lists, Try again'
+          });
         });
       }
     }
@@ -196,7 +199,7 @@ var UsersController = function () {
         });
       }
       _Repository2.default.findDataById(req.params.id, User, 'users').then(function (user) {
-        return res.status(user.status).json(user.data);
+        return res.status(user.status).send(user.data);
       });
     }
 
@@ -218,7 +221,7 @@ var UsersController = function () {
         if (!validatedUser) {
           return res.status(422).json({ message: 'Empty fields not allowed, fill them' });
         }
-        if (req.body.roleId && roleId !== _Constants2.default.SUPERADMIN) {
+        if (req.body && req.body.roleId && roleId !== _Constants2.default.SUPERADMIN) {
           return res.status(403).json({ message: 'Only a superadmin can change user roles' });
         }
         var id = req.params.id;
@@ -315,7 +318,7 @@ var UsersController = function () {
         });
         return res.status(200).json(filteredUsersList);
       }).catch(function () {
-        return res.status(400).json({
+        return res.status(500).json({
           message: 'Error occured while searching. Do try again!'
         });
       });
@@ -349,7 +352,7 @@ var UsersController = function () {
             }).then(function (allUser) {
               res.status(200).json(allUser);
             }).catch(function () {
-              res.status(400).json({
+              res.status(500).json({
                 message: 'Error while getting data from the database'
               });
             });
@@ -363,23 +366,11 @@ var UsersController = function () {
             message: 'The user does not exist in the database'
           });
         }
+      }).catch(function () {
+        res.status(500).json({
+          message: 'Error while getting data from the database'
+        });
       });
-    }
-
-    /**
-     * Removes the token from the local storage hence ending its session
-     * abruptly
-     * @static
-     * @param {object} req request made from the client
-     * @param {object} res response from the server
-     * @returns {object} response object
-     * @memberof UsersController
-     */
-
-  }, {
-    key: 'logout',
-    value: function logout(req, res) {
-      res.status(200).json({ message: 'User successfully logged out' });
     }
   }]);
 

@@ -205,8 +205,8 @@ var Validation = function () {
      */
 
   }, {
-    key: 'checkNullDataUser',
-    value: function checkNullDataUser(name, email, password) {
+    key: 'checkSignupValidity',
+    value: function checkSignupValidity(name, email, password) {
       var errorMessage = [];
       if (!email) {
         errorMessage.push('Email cannot be empty');
@@ -234,8 +234,8 @@ var Validation = function () {
      */
 
   }, {
-    key: 'checkNullLogInData',
-    value: function checkNullLogInData(email, password) {
+    key: 'checkLogInValidity',
+    value: function checkLogInValidity(email, password) {
       var errorMessage = [];
       if (!email) {
         errorMessage.push('Email cannot be empty');
@@ -260,8 +260,8 @@ var Validation = function () {
      */
 
   }, {
-    key: 'checkNullDataDocument',
-    value: function checkNullDataDocument(title, content) {
+    key: 'checkCreateDocumentValidity',
+    value: function checkCreateDocumentValidity(title, content) {
       var errorMessage = [];
       if (!title) {
         errorMessage.push('Document title cannot be empty');

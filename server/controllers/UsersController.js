@@ -17,7 +17,7 @@ dotenv.config();
  */
 class UsersController {
   /**
-   * Creates a new user instance and saves it to 
+   * Creates a new user instance and saves it to
    * the database
    * @param {object} req request made from the client
    * @param {object} res response from the server
@@ -26,15 +26,17 @@ class UsersController {
   static signUp(req, res) {
     const validatedUser = Validation
       .validateSignUp(req.body.name, req.body.email, req.body.password);
-    let name, email, password;
+    let name;
+    let email;
+    let password;
     if (validatedUser) {
       name = validatedUser.name;
       email = validatedUser.email;
       password = validatedUser.password;
     } else {
-      return res.status(422).json({
+      return res.status(400).json({
         message: Validation
-          .checkNullDataUser(req.body.name, req.body.email, req.body.password)
+          .checkSignupValidity(req.body.name, req.body.email, req.body.password)
       });
     }
     const hashedPassword = Helper.hashPassword(password);
@@ -65,9 +67,8 @@ class UsersController {
         token
       });
     })
-      .catch(error => res.status(500).json({
+      .catch(() => res.status(500).json({
         message: 'Error signing up user, check if invalid role value',
-        error
       }));
   }
   /**
@@ -84,7 +85,7 @@ class UsersController {
       '';
     if (!email || !Validation.checkEmailValidityOf(email) || !password) {
       return res.status(400).json({
-        message: Validation.checkNullLogInData(email, password)
+        message: Validation.checkLogInValidity(email, password)
       });
     }
     return User.findOne({
@@ -107,12 +108,12 @@ class UsersController {
       }
     }).catch(() => {
       res.status(500).json({
-        message: 'Problems with either the email or password, Try again'
+        message: 'Problems with either the email or password, Try again',
       });
     });
   }
   /**
-   * Shows a detail of all the users successfully signed up on the 
+   * Shows a detail of all the users successfully signed up on the
    * database
    * @param {object} req request made from the client
    * @param {object} res response from the server
@@ -127,15 +128,20 @@ class UsersController {
       });
     }
     if (req.query) {
-      const offset = req.query && req.query.offset ? req.query.offset : 0,
-        limit = req.query && req.query.limit
-          ? req.query.limit
-          : Constants.MAXIMUM;
+      const offset = req.query && req.query.offset ? req.query.offset : 0;
+      const limit = req.query && req.query.limit
+        ? req.query.limit
+        : Constants.MAXIMUM;
       return User.findAndCountAll({ offset, limit })
         .then((users) => {
           res.status(200).json(
             Helper.listContextDetails(users, limit, offset, 'users')
           );
+        })
+        .catch(() => {
+          res.status(500).json({
+            message: 'Problems retrieving the user lists, Try again',
+          });
         });
     }
   }
@@ -156,7 +162,7 @@ class UsersController {
     }
     Repository
       .findDataById(req.params.id, User, 'users')
-      .then(user => res.status(user.status).json(user.data));
+      .then(user => res.status(user.status).send(user.data));
   }
 
   /**
@@ -177,7 +183,7 @@ class UsersController {
           { message: 'Empty fields not allowed, fill them' }
         );
       }
-      if (req.body.roleId && roleId !== Constants.SUPERADMIN) {
+      if (req.body && req.body.roleId && roleId !== Constants.SUPERADMIN) {
         return res.status(403).json(
           { message: 'Only a superadmin can change user roles' }
         );
@@ -276,7 +282,7 @@ class UsersController {
         });
         return res.status(200).json(filteredUsersList);
       })
-      .catch(() => res.status(400).json({
+      .catch(() => res.status(500).json({
         message: 'Error occured while searching. Do try again!'
       }));
   }
@@ -310,7 +316,7 @@ class UsersController {
                 res.status(200).json(allUser);
               })
               .catch(() => {
-                res.status(400).json({
+                res.status(500).json({
                   message: 'Error while getting data from the database'
                 });
               });
@@ -324,20 +330,12 @@ class UsersController {
             message: 'The user does not exist in the database'
           });
         }
+      })
+      .catch(() => {
+        res.status(500).json({
+          message: 'Error while getting data from the database'
+        });
       });
-  }
-
-  /**
-   * Removes the token from the local storage hence ending its session
-   * abruptly
-   * @static
-   * @param {object} req request made from the client
-   * @param {object} res response from the server
-   * @returns {object} response object
-   * @memberof UsersController
-   */
-  static logout(req, res) {
-    res.status(200).json({ message: 'User successfully logged out' });
   }
 }
 

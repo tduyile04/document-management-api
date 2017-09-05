@@ -318,22 +318,21 @@
 <p>Request:</p>
 </blockquote>
 <pre class="highlight javascript tab-javascript"><code><span class="p">{</span>
-  <span class="s2">"email"</span><span class="p">:</span> <span class="s2">"ryan.adams@edocumentmgt.com"</span><span class="p">,</span>
-  <span class="s2">"password"</span><span class="p">:</span> <span class="s2">"ryanadams"</span><span class="p">,</span>
+    <span class="s2">"email"</span><span class="p">:</span> <span class="s2">"lewishart20@tinder.com"</span><span class="p">,</span>
+    <span class="s2">"password"</span><span class="p">:</span> <span class="s2">"lewishart"</span>
 <span class="p">}</span>
 </code></pre>
 <blockquote>
 <p>Response:</p>
 </blockquote>
 <pre class="highlight javascript tab-javascript"><code><span class="p">{</span>
-  <span class="p">{</span>
-  <span class="s2">"id"</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
-  <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"ryan adams"</span><span class="p">,</span>
-  <span class="s2">"email"</span><span class="p">:</span><span class="s2">"ryan.adams@edocumentmgt.com"</span>
+  <span class="s2">"user"</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s2">"id"</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+    <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"lewis hart"</span><span class="p">,</span>
+    <span class="s2">"email"</span><span class="p">:</span> <span class="s2">"lewishart20@tinder.com"</span><span class="p">,</span>
+    <span class="s2">"roleId"</span><span class="p">:</span> <span class="mi">1</span>
   <span class="p">},</span>
-  <span class="p">{</span>
-    <span class="s2">"token"</span><span class="p">:</span> <span class="s2">"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwidXNlcm5hbWUiOiJrZW5wYWNoaSIsInJvbGVJZCI6MiwiaWF0IjoxNDk2MDAxNTE4LCJleHAiOjE0OTY2MDYzMTh9.GjmEBd_9LH9b_Gdabgdfit2HfkFBZfPshquUnAmRXV8"</span>
-  <span class="p">}</span>
+  <span class="s2">"token"</span><span class="p">:</span> <span class="s2">"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsInVzZXJFbWFpbCI6Imxld2lzaGFydDIwQHRpbmRlci5jb20iLCJ1c2VyUm9sZSI6MSwiaWF0IjoxNTA0NjI0NDYzLCJleHAiOjE1MDQ3MTA4NjN9.lQ0feMFMi2MDhQBsgWm-OtUScPmOS7czkc6nlYfskoc"</span>
 <span class="p">}</span>
 </code></pre><h3 id='request'>Request</h3>
 <ul>
@@ -448,44 +447,43 @@ You must set the token at the header after login to access protected routes
 <p>Request:</p>
 </blockquote>
 <pre class="highlight javascript tab-javascript"><code><span class="p">{</span>
-  <span class="s2">"email"</span><span class="p">:</span> <span class="s2">"deetee@edocumentmgt.com"</span><span class="p">,</span>
-  <span class="s2">"username"</span><span class="p">:</span> <span class="s2">"dee tee"</span><span class="p">,</span>
-  <span class="s2">"password"</span><span class="p">:</span> <span class="s2">"deetee!"</span><span class="p">,</span>
+    <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"lewis hart"</span><span class="p">,</span>
+    <span class="s2">"email"</span><span class="p">:</span> <span class="s2">"lewishart@tinder.com"</span><span class="p">,</span>
+    <span class="s2">"password"</span><span class="p">:</span> <span class="s2">"lewishart"</span>
 <span class="p">}</span>
 </code></pre>
 <blockquote>
 <p>Response:</p>
 </blockquote>
 <pre class="highlight javascript tab-javascript"><code><span class="p">{</span>
-  <span class="p">{</span>
-    <span class="s2">"id"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-    <span class="s2">"email"</span><span class="p">:</span> <span class="s2">"deetee@edocumentmgt.com"</span><span class="p">,</span>
-    <span class="s2">"username"</span><span class="p">:</span> <span class="s2">"dee tee"</span><span class="p">,</span>
-    <span class="s2">"roleId"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+  <span class="s2">"user"</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s2">"id"</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+    <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"lewis hart"</span><span class="p">,</span>
+    <span class="s2">"email"</span><span class="p">:</span> <span class="s2">"lewishart@tinder.com"</span><span class="p">,</span>
+    <span class="s2">"roleId"</span><span class="p">:</span> <span class="mi">1</span>
   <span class="p">},</span>
-  <span class="s2">"token"</span><span class="p">:</span> <span class="s2">"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInVzZXJFbWFpbCI6ImRlZXRlZUBlZG9jdW1lbnRtZ3QuY29tIiwidXNlclJvbGUiOjEsImlhdCI6MTUwMjcyOTg1OCwiZXhwIjoxNTAyODE2MjU4fQ.Xa53n2B8HXYp0zzQQvoCQl769Mc0G9FZXPYV_CjgaPU"</span>
+  <span class="s2">"token"</span><span class="p">:</span> <span class="s2">"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsInVzZXJFbWFpbCI6Imxld2lzaGFydDIwQHRpbmRlci5jb20iLCJ1c2VyUm9sZSI6MSwiaWF0IjoxNTA0NjIzNDk2LCJleHAiOjE1MDQ3MDk4OTZ9.I4CVt0yavx5sxNdSKiPWvHR_f5v1DuLd0615ZljYTAk"</span>
 <span class="p">}</span>
 </code></pre><h2 id='log-in-user'>Log In User</h2>
 <blockquote>
 <p>Request:</p>
 </blockquote>
 <pre class="highlight javascript tab-javascript"><code><span class="p">{</span>
-  <span class="s2">"email"</span><span class="p">:</span> <span class="s2">"deetee@edocumentmgt.com"</span><span class="p">,</span>
-  <span class="s2">"username"</span><span class="p">:</span> <span class="s2">"dee tee"</span><span class="p">,</span>
-  <span class="s2">"password"</span><span class="p">:</span> <span class="s2">"deetee!"</span><span class="p">,</span>
+    <span class="s2">"email"</span><span class="p">:</span> <span class="s2">"lewishart20@tinder.com"</span><span class="p">,</span>
+    <span class="s2">"password"</span><span class="p">:</span> <span class="s2">"lewishart"</span>
 <span class="p">}</span>
 </code></pre>
 <blockquote>
 <p>Response:</p>
 </blockquote>
 <pre class="highlight javascript tab-javascript"><code><span class="p">{</span>
-  <span class="p">{</span>
-    <span class="s2">"id"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-    <span class="s2">"email"</span><span class="p">:</span> <span class="s2">"deetee@edocumentmgt.com"</span><span class="p">,</span>
-    <span class="s2">"username"</span><span class="p">:</span> <span class="s2">"dee tee"</span><span class="p">,</span>
-    <span class="s2">"roleId"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+  <span class="s2">"user"</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s2">"id"</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+    <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"lewis hart"</span><span class="p">,</span>
+    <span class="s2">"email"</span><span class="p">:</span> <span class="s2">"lewishart20@tinder.com"</span><span class="p">,</span>
+    <span class="s2">"roleId"</span><span class="p">:</span> <span class="mi">1</span>
   <span class="p">},</span>
-  <span class="s2">"token"</span><span class="p">:</span> <span class="s2">"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInVzZXJFbWFpbCI6ImRlZXRlZUBlZG9jdW1lbnRtZ3QuY29tIiwidXNlclJvbGUiOjEsImlhdCI6MTUwMjcyOTg1OCwiZXhwIjoxNTAyODE2MjU4fQ.Xa53n2B8HXYp0zzQQvoCQl769Mc0G9FZXPYV_CjgaPU"</span>
+  <span class="s2">"token"</span><span class="p">:</span> <span class="s2">"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsInVzZXJFbWFpbCI6Imxld2lzaGFydDIwQHRpbmRlci5jb20iLCJ1c2VyUm9sZSI6MSwiaWF0IjoxNTA0NjIzNTQ5LCJleHAiOjE1MDQ3MDk5NDl9.rHPphItGMX-9bUbPRwWDbePKbJ1ZYUGtVzaHF51tMNY"</span>
 <span class="p">}</span>
 </code></pre><h3 id='request-3'>Request</h3>
 <ul>
@@ -503,9 +501,11 @@ You must set the token at the header after login to access protected routes
 </blockquote>
 <pre class="highlight javascript tab-javascript"><code><span class="p">{</span>
     <span class="s2">"id"</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
-    <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"sheryl"</span><span class="p">,</span>
-    <span class="s2">"email"</span><span class="p">:</span> <span class="s2">"sheryl@edocumentmgt.com"</span><span class="p">,</span>
+    <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"lewis hart"</span><span class="p">,</span>
+    <span class="s2">"email"</span><span class="p">:</span> <span class="s2">"lewishart@tinder.com"</span><span class="p">,</span>
     <span class="s2">"roleId"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">"createdAt"</span><span class="p">:</span> <span class="s2">"2017-09-05T14:28:22.487Z"</span><span class="p">,</span>
+    <span class="s2">"updatedAt"</span><span class="p">:</span> <span class="s2">"2017-09-05T14:28:22.487Z"</span>
 <span class="p">}</span>
 </code></pre><h3 id='request-4'>Request</h3>
 <ul>
@@ -612,18 +612,17 @@ You must set the token at the header after login to access protected routes
 </blockquote>
 <pre class="highlight javascript tab-javascript"><code><span class="p">[</span>
   <span class="p">{</span>
-    <span class="s2">"id"</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
-    <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"sheryl"</span><span class="p">,</span>
-    <span class="s2">"email"</span><span class="p">:</span> <span class="s2">"sheryl@edocumentmgt.com"</span><span class="p">,</span>
-    <span class="s2">"password"</span><span class="p">:</span> <span class="s2">"$2a$10$iaOa1bLhu5WULsdSVXpEkOwp3RvHYsWEzTrW4bz4q.L/xWvWm/UD2"</span><span class="p">,</span>
-    <span class="s2">"roleId"</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-    <span class="s2">"createdAt"</span><span class="p">:</span> <span class="s2">"2017-08-09T11:57:03.059Z"</span><span class="p">,</span>
-    <span class="s2">"updatedAt"</span><span class="p">:</span> <span class="s2">"2017-08-14T17:09:15.475Z"</span>
+      <span class="s2">"id"</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+      <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"lewis hart"</span><span class="p">,</span>
+      <span class="s2">"email"</span><span class="p">:</span> <span class="s2">"lewishart@tinder.com"</span><span class="p">,</span>
+      <span class="s2">"roleId"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+      <span class="s2">"createdAt"</span><span class="p">:</span> <span class="s2">"2017-09-05T14:28:22.487Z"</span><span class="p">,</span>
+      <span class="s2">"updatedAt"</span><span class="p">:</span> <span class="s2">"2017-09-05T14:28:22.487Z"</span>
   <span class="p">}</span>
 <span class="p">]</span>
 </code></pre><h3 id='request-8'>Request</h3>
 <ul>
-<li>Endpoint: GET: <code>api/v1/search/users?q=sheryl</code></li>
+<li>Endpoint: GET: <code>api/v1/search/users?q=hart</code></li>
 <li>Requires: Authentication</li>
 </ul>
 <h3 id='query-parameters-2'>Query Parameters</h3>
@@ -896,31 +895,19 @@ You must set the token at the header after login to access protected routes
 </tr>
 <tr>
 <td>403</td>
-<td>Forbidden -- The kitten requested is hidden for administrators only.</td>
+<td>Forbidden -- The users/documents requested is hidden for administrators only.</td>
 </tr>
 <tr>
 <td>404</td>
-<td>Not Found -- The specified kitten could not be found.</td>
-</tr>
-<tr>
-<td>405</td>
-<td>Method Not Allowed -- You tried to access a kitten with an invalid method.</td>
-</tr>
-<tr>
-<td>406</td>
-<td>Not Acceptable -- You requested a format that isn&#39;t json.</td>
+<td>Not Found -- The specified user/document could not be found.</td>
 </tr>
 <tr>
 <td>410</td>
-<td>Gone -- The kitten requested has been removed from our servers.</td>
-</tr>
-<tr>
-<td>418</td>
-<td>I&#39;m a teapot.</td>
+<td>Gone -- The user/document requested has been removed from our servers.</td>
 </tr>
 <tr>
 <td>429</td>
-<td>Too Many Requests -- You&#39;re requesting too many kittens! Slow down!</td>
+<td>Too Many Requests -- You&#39;re requesting too many users/documents! Slow down!</td>
 </tr>
 <tr>
 <td>500</td>

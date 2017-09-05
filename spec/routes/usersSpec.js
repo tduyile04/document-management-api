@@ -2,7 +2,6 @@ import request from 'supertest';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 import bcrypt from 'bcrypt';
-import localStorage from 'local-storage';
 import server from '../../app';
 import Constants from '../../server/constants/Constants';
 import models from '../../server/models';
@@ -19,7 +18,6 @@ chai.use(chaiHttp);
 
 describe('Users integration tests for the user endpoint', () => {
   beforeEach((done) => {
-    localStorage.clear();
     User.destroy({
       where: {},
       truncate: true,
@@ -72,7 +70,7 @@ describe('Users integration tests for the user endpoint', () => {
       .post('/api/v1/users')
       .send(noNameUser)
       .end((err, res) => {
-        res.should.have.status(422);
+        res.should.have.status(400);
         res.body.message.should.be.a('array');
         res.body.message.should.be.eql(['Name field cannot be empty']);
         done();
@@ -84,7 +82,7 @@ describe('Users integration tests for the user endpoint', () => {
       .post('/api/v1/users')
       .send(nullUser)
       .end((err, res) => {
-        res.should.have.status(422);
+        res.should.have.status(400);
         res.body.should.have.property('message');
         res.body.message.should.be.a('array');
         res.body.message.should.be.eql([
@@ -137,7 +135,7 @@ describe('Users integration tests for the user endpoint', () => {
       chai.request(server)
       .get('/api/v1/users/')
       .end((err, res) => {
-        res.should.have.status(400);
+        res.should.have.status(401);
         res.body.should.be.a('object');
         res.body.should.have.property('message');
         res.body.should.have.property('success');
@@ -340,7 +338,7 @@ describe('Users integration tests for the user endpoint', () => {
     });
     it('should give a message if user not found when queried by an admin', (done) => {
       chai.request(server)
-      .get('/api/v1/users/2')
+      .get('/api/v1/users/100')
       .set('x-access-token', adminToken)
       .end((err, res) => {
         res.should.have.status(404);
@@ -358,8 +356,6 @@ describe('Users integration tests for the user endpoint', () => {
         res.body.should.be.a('object');
         res.body.should.have.property('name').eql('superadmin');
         res.body.should.have.property('email').eql('superadmin@random.com');
-        res.body.should.have.property('password');
-        res.body.password.should.be.a('string');
         done();
       });
     });

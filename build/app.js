@@ -47,7 +47,7 @@ app.use('/', _express2.default.static(_path2.default.resolve(__dirname, './../pu
 (0, _UserRoutes2.default)(app);
 (0, _DocumentRoutes2.default)(app);
 
-app.get('*', function (req, res) {
+app.use('*', function (req, res) {
   res.status(200).sendFile(_path2.default.resolve(__dirname, './../public', 'index.html'));
 });
 

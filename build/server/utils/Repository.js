@@ -63,7 +63,23 @@ var Repository = function () {
                       status: 404
                     };
                   } else {
-                    result = { data: data, status: 200 };
+                    if (modelName === 'users') {
+                      var newData = {
+                        id: data.id,
+                        name: data.name,
+                        email: data.email,
+                        roleId: data.roleId,
+                        createdAt: data.createdAt,
+                        updatedAt: data.updatedAt
+                      };
+                      result = {
+                        data: newData,
+                        status: 200
+                      };
+                    }
+                    if (modelName === 'documents') {
+                      result = { data: data, status: 200 };
+                    }
                   }
                 }).catch(function () {
                   result = {

@@ -64,7 +64,6 @@ describe('Documents integration tests for the documents endpoint', () => {
       .post('/api/v1/users')
       .send(randomUser)
       .end((err, res) => {
-        regularUser = res.body.token;
         regularToken = res.body.token;
         done();
       });
@@ -126,7 +125,7 @@ describe('Documents integration tests for the documents endpoint', () => {
       .set('x-access-token', regularToken)
       .send(document)
       .end((err, res) => {
-        res.should.have.status(422);
+        res.should.have.status(400);
         res.body.should.have.property('message');
         res.body.message.should.be.a('array');
         res.body.message[0].should.be.eql('Document title cannot be empty');

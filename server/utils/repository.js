@@ -27,7 +27,23 @@ export default class Repository {
           status: 404
         };
       } else {
-        result = { data, status: 200 };
+        if (modelName === 'users') {
+          const newData = {
+            id: data.id,
+            name: data.name,
+            email: data.email,
+            roleId: data.roleId,
+            createdAt: data.createdAt,
+            updatedAt: data.updatedAt
+          };
+          result = {
+            data: newData,
+            status: 200
+          };
+        }
+        if (modelName === 'documents') {
+          result = { data, status: 200 };
+        }
       }
     })
       .catch(() => {

@@ -156,7 +156,7 @@ export default class Validation {
    * @returns {string} error message
    * @memberof Validation
    */
-  static checkNullDataUser(name, email, password) {
+  static checkSignupValidity(name, email, password) {
     const errorMessage = [];
     if (!email) {
       errorMessage.push('Email cannot be empty');
@@ -182,7 +182,7 @@ export default class Validation {
    * @returns {string} error message
    * @memberof Validation
    */
-  static checkNullLogInData(email, password) {
+  static checkLogInValidity(email, password) {
     const errorMessage = [];
     if (!email) {
       errorMessage.push('Email cannot be empty');
@@ -205,7 +205,7 @@ export default class Validation {
    * @returns {string} error message
    * @memberof Validation
    */
-  static checkNullDataDocument(title, content) {
+  static checkCreateDocumentValidity(title, content) {
     const errorMessage = [];
     if (!title) {
       errorMessage.push('Document title cannot be empty');

@@ -16,7 +16,6 @@ const UserRoutes = (app) => {
 
   router.post('/users', UsersController.signUp);
   router.post('/users/login', UsersController.logIn);
-  router.post('/users/logout', UsersController.logout);
 
   // Authentication middleware
   router.use(AuthenticationController.authenticate);

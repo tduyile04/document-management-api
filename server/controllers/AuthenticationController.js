@@ -37,13 +37,15 @@ class AuthenticationController {
     if (token) {
       jwt.verify(token, process.env.SECRET, (error, decoded) => {
         if (error) {
-          return res.status(401).json({ message: 'Failed to authenticate token' });
+          return res.status(401).json({
+            message: 'Failed to authenticate token'
+          });
         }
         req.decoded = decoded;
         next();
       });
     } else {
-      res.status(400).send({
+      res.status(401).send({
         success: false,
         message: 'No token provided'
       });

@@ -32,7 +32,6 @@ var UserRoutes = function UserRoutes(app) {
 
   router.post('/users', _UsersController2.default.signUp);
   router.post('/users/login', _UsersController2.default.logIn);
-  router.post('/users/logout', _UsersController2.default.logout);
 
   // Authentication middleware
   router.use(_AuthenticationController2.default.authenticate);

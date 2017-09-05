@@ -2,7 +2,7 @@
   "development": {
     "username": "andeladeveloper",
     "password": null,
-    "database": "document-management-api",
+    "database": "document_management_api",
     "host": "127.0.0.1",
     "dialect": "postgres",
     "port": 5432

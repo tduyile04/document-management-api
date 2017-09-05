@@ -23,8 +23,8 @@ class DocumentsController {
     const title = Validation.checkDataValidityOf(req.body.title);
     const content = Validation.checkDataValidityOf(req.body.content);
     if (!title || !content) {
-      return res.status(422).json({
-        message: Validation.checkNullDataDocument(title, content)
+      return res.status(400).json({
+        message: Validation.checkCreateDocumentValidity(title, content)
       });
     }
     const documentDetails = {
@@ -46,7 +46,7 @@ class DocumentsController {
         });
       }
       return res.status(201).json(document);
-    }).catch(() => res.status(400).json({
+    }).catch(() => res.status(500).json({
       message: 'Error encountered while creating the documents'
     }));
   }
@@ -63,18 +63,18 @@ class DocumentsController {
     const id = userDetails.userId;
     if (roleId === Constants.ADMIN || roleId === Constants.SUPERADMIN) {
       if (req.query) {
-        const offset = req.query.offset || 0,
-          limit = req.query.limit || Constants.MAXIMUM;
+        const offset = req.query.offset || 0;
+        const limit = req.query.limit || Constants.MAXIMUM;
         Document.findAndCountAll({ offset, limit })
           .then(documents => res.status(200).json(
             Helper.listContextDetails(documents, limit, offset, 'documents')
           ));
       }
     } else {
-      const offset = req.query && req.query.offset ? req.query.offset : 0,
-        limit = req.query && req.query.limit
-          ? req.query.limit
-          : Constants.MAXIMUM;
+      const offset = req.query && req.query.offset ? req.query.offset : 0;
+      const limit = req.query && req.query.limit
+        ? req.query.limit
+        : Constants.MAXIMUM;
       Document.findAndCountAll({
         offset,
         limit,
@@ -98,7 +98,12 @@ class DocumentsController {
       })
         .then(documents => res.status(200).json(
           Helper.listContextDetails(documents, limit, offset, 'documents')
-        ));
+        ))
+        .catch(() => {
+          res.status(500).json({
+            message: 'Error encountered retrieving all documents'
+          });
+        });
     }
   }
   /**
@@ -143,7 +148,11 @@ class DocumentsController {
     const title = req.body.title;
     const access = req.body.access;
     const content = req.body.content;
-    const updateField = { title, content, access };
+    const updateField = {
+      title,
+      content,
+      access
+    };
     Repository.findDataById(req.params.id, Document, 'documents')
       .then((document) => {
         if (userId === document.data.userId
@@ -208,7 +217,7 @@ class DocumentsController {
         }
         return res.status(200).json(document);
       })
-      .catch(() => res.status(400).json({
+      .catch(() => res.status(500).json({
         message: 'Eror encountered while retrieving the user\'s document'
       }));
   }
