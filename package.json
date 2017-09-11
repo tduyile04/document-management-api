@@ -1,0 +1,76 @@
+{
+  "name": "document-management-api",
+  "version": "1.0.0",
+  "description": "an api for document management system",
+  "engines": {
+    "node": "8"
+  },
+  "main": "./build/app.js",
+  "scripts": {
+    "postinstall": "gulp build",
+    "start": "NODE_ENV=production node ./build/app --env production",
+    "dev": "gulp",
+    "test": "NODE_ENV=test gulp build --env test && nyc --reporter=html --reporter=text --env test mocha ./build/spec/**/*.js --timeout=50000",
+    "coverage": "NODE_ENV=test nyc report --reporter=text-lcov | coveralls"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tolupatrick004/document-management-api.git"
+  },
+  "author": "Duyile Tolulope Patrick",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tolupatrick004/document-management-api/issues"
+  },
+  "homepage": "https://github.com/tolupatrick004/document-management-api#readme",
+  "dependencies": {
+    "babel-preset-env": "^1.6.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1",
+    "babel-register": "^6.24.1",
+    "bcrypt": "^1.0.2",
+    "body-parser": "^1.17.2",
+    "dotenv": "^4.0.0",
+    "eslint-config-airbnb-base": "^11.3.1",
+    "express": "^4.15.3",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^6.1.2",
+    "gulp-exit": "0.0.2",
+    "gulp-inject-modules": "^1.0.0",
+    "gulp-clean": "^0.3.2",
+    "gulp-coveralls": "^0.1.4",
+    "gulp-istanbul": "^1.1.2",
+    "gulp-jasmine": "^2.4.2",
+    "gulp-mocha": "^4.3.1",
+    "gulp-nodemon": "^2.2.1",
+    "gulp-shell": "^0.6.3",
+    "jsonwebtoken": "^7.4.1",
+    "local-storage": "^1.4.2",
+    "morgan": "^1.8.2",
+    "pg": "^6.4.1",
+    "pg-hstore": "^2.3.2",
+    "regenerator-runtime": "^0.10.5",
+    "sequelize": "^4.4.2",
+    "validator": "^8.0.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-core": "^6.25.0",
+    "babel-loader": "^7.1.1",
+    "babel-plugin-transform-async-to-generator": "^6.24.1",
+    "chai": "^4.1.0",
+    "chai-http": "^3.0.0",
+    "coveralls": "^2.13.1",
+    "eslint": "^4.4.0",
+    "eslint-config-airbnb": "^15.1.0",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-jsx-a11y": "^6.0.2",
+    "eslint-plugin-react": "^7.1.0",
+    "istanbul": "^0.4.5",
+    "jasmine": "^2.6.0",
+    "mocha": "^3.5.0",
+    "nodemon": "^1.11.0",
+    "nyc": "^11.1.0",
+    "supertest": "^3.0.0"
+  }
+}
