@@ -1,5 +1,6 @@
 import regeneratorRuntime from 'regenerator-runtime';
-import Constants from '../constants/index';
+import Constants from '../constants/Constants';
+import Helper from '../utils/Helper';
 
 /**
  * An helper class that abstracts shared model queries so as to prevent
@@ -26,11 +27,29 @@ export default class Repository {
           status: 404
         };
       } else {
-        result = { data, status: 200 };
+        if (modelName === 'users') {
+          const newData = {
+            id: data.id,
+            name: data.name,
+            email: data.email,
+            roleId: data.roleId,
+            createdAt: data.createdAt,
+            updatedAt: data.updatedAt
+          };
+          result = {
+            data: newData,
+            status: 200
+          };
+        }
+        if (modelName === 'documents') {
+          result = { data, status: 200 };
+        }
       }
     })
       .catch(() => {
-        result = { message: 'Error occured while retrieving the data', status: 500 };
+        result = {
+          message: 'Error occured while retrieving the data', status: 500
+        };
       });
     return result;
   }
@@ -38,10 +57,10 @@ export default class Repository {
   /**
    * Updates the matching data that equals the id params
    * @static
-   * @param {object} userRequest
-   * @param {object} updateId 
-   * @param {object} model 
-   * @param {string} modelName 
+   * @param {object} userRequest the user details sent
+   * @param {object} updateId the specific id to be updated
+   * @param {object} model the choice model
+   * @param {string} modelName the name of the choice model
    * @returns {object} feedback message
    * @memberof Repository
    */
@@ -64,11 +83,7 @@ export default class Repository {
         status: 400
       };
     }
-    await model.update(updateField, {
-      where: {
-        id: updateId
-      }
-    })
+    await model.update(updateField, { where: { id: updateId } })
       .then((updatedContext) => {
         if (updatedContext[0] === Constants.UPDATED) {
           result = {
@@ -77,7 +92,9 @@ export default class Repository {
           };
         } else {
           result = {
-            data: { message: 'You do not have the permission to perform this action' },
+            data: {
+              message: 'You do not have the permission to perform this action'
+            },
             status: 403
           };
         }
@@ -88,16 +105,33 @@ export default class Repository {
           status: 500
         };
       });
+    if (result.status === 200) {
+      await model.findById(updateId)
+        .then((updatedField) => {
+          result = {
+            data: Helper.chooseContext(modelName, updatedField),
+            status: 200
+          };
+        })
+        .catch(() => {
+          result = {
+            data: {
+              message: 'Error encoutered while retrieving the updated document'
+            },
+            status: 500
+          };
+        });
+    }
     return result;
   }
 
   /**
    * Updates the matching data roles that equals the id params
    * @static
-   * @param {integer} roleId 
-   * @param {integer} updateId 
-   * @param {object} model 
-   * @param {string} modelName 
+   * @param {integer} roleId the id of the users role 
+   * @param {integer} updateId the id to be updated
+   * @param {object} model the choice model
+   * @param {string} modelName the name of the choice model
    * @returns {object} feedback message
    * 
    * @memberof Repository
@@ -119,28 +153,46 @@ export default class Repository {
           };
         } else {
           result = {
-            data: { message: 'No matching user was found in the database, No updates made' },
+            data: {
+              message: 'No matching user was found, No updates made'
+            },
             status: 404
           };
         }
       })
       .catch(() => {
         result = {
-          data: { message: 'Error encoutered while updating...' },
+          data: { message: 'Error encoutered while updating the user' },
           status: 500
         };
       });
+    if (result.status === 200) {
+      await model.findById(updateId)
+        .then((updatedField) => {
+          result = {
+            data: Helper.chooseContext(modelName, updatedField),
+            status: 200
+          };
+        })
+        .catch(() => {
+          result = {
+            data: {
+              message: 'Error encoutered while retrieving the updated document'
+            },
+            status: 500
+          };
+        });
+    }
     return result;
   }
 
   /**
-   * 
    * Deletes the matching data that equals the id params
    * @static
-   * @param {object} model 
-   * @param {string} modelName 
-   * @param {integer} deleteId 
-   * @returns {object} feedback message
+   * @param {object} model the choice model
+   * @param {string} modelName the name of the choice model
+   * @param {integer} deleteId the id of the item to be deleted
+   * @returns {object} feedback message from delete operation
    * @memberof Repository
    */
   static async deleteContextInstance(model, modelName, deleteId) {
@@ -153,19 +205,25 @@ export default class Repository {
       .then((deletedContext) => {
         if (deletedContext === Constants.DELETED) {
           result = {
-            data: { message: `${modelName} has been removed from the database successfully` },
+            data: {
+              message: `${modelName} has been removed successfully`
+            },
             status: 200
           };
         } else {
           result = {
-            data: { message: `No matching ${modelName.toLowerCase()} was found in the database` },
+            data: {
+              message: `No matching ${modelName.toLowerCase()} was found`
+            },
             status: 404
           };
         }
       })
       .catch(() => {
         result = {
-          data: { message: `Error encountered while trying to delete ${modelName.toLowerCase()}, Please try again` },
+          data: {
+            message: `Error encountered while trying to delete ${modelName}`
+          },
           status: 500
         };
       });

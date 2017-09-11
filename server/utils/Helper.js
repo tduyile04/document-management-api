@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-import Pagination from './pagination';
+import Pagination from './Pagination';
 
 dotenv.config();
 
@@ -64,7 +64,7 @@ export default class Helper {
       return result;
     }
     context.rows.forEach((data) => {
-      filteredArray.push(data);
+      filteredArray.push(Helper.chooseContext(modelName, data));
     });
     const totalDataCount = context.count;
     const pageSize = parseInt(Pagination.getPageSize(limit), 10);
@@ -78,6 +78,36 @@ export default class Helper {
     };
     result[`${modelName}`] = filteredArray;
     result.pageDetails = pageDetails;
+    return result;
+  }
+
+  /**
+   * Selects the appropriate response based on the model name
+   * supplied
+   * @static
+   * @param {string} modelName The name of the model
+   * @param {object} data The data passed in
+   * @returns {object} the resulting data from the choice selected
+   * @memberof Helper
+   */
+  static chooseContext(modelName, data) {
+    let result = {};
+    switch (modelName) {
+      case 'users':
+        result = {
+          id: data.id,
+          name: data.name,
+          email: data.email,
+          roleId: data.roleId,
+          createdAt: data.createdAt,
+          updatedAt: data.updatedAt
+        };
+        break;
+      case 'documents':
+        result = data;
+        break;
+      default:
+    }
     return result;
   }
 }

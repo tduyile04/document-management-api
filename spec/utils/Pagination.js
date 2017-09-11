@@ -1,6 +1,6 @@
 import chai from 'chai';
-import Pagination from '../../server/utils/pagination';
-import Constants from '../../server/constants/index';
+import Pagination from '../../server/utils/Pagination';
+import Constants from '../../server/constants/Constants';
 
 const should = chai.should();
 

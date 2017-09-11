@@ -1,4 +1,9 @@
-module.exports = {
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var Constants = {
   ZERO: 0,
   UNIT: 1,
   UPDATED: 1,
@@ -11,3 +16,5 @@ module.exports = {
   PRIVATE: 'private',
   ROLE: 'role'
 };
+
+exports.default = Constants;

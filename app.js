@@ -1,6 +1,12 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import logger from 'morgan';
+import path from 'path';
+import dotenv from 'dotenv';
+import UserRoutes from './server/routes/UserRoutes';
+import DocumentRoutes from './server/routes/DocumentRoutes';
+
+dotenv.config();
 
 const app = express();
 
@@ -8,11 +14,15 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-require('./server/routes/user')(app);
-require('./server/routes/documents')(app);
+app.use('/', express.static(path.resolve(__dirname, './../public')));
 
-app.get('*', (req, res) => {
-  res.status(200).send({ message: 'API endpoint is unavailable. Refer to documentation for available endpoints' });
+UserRoutes(app);
+DocumentRoutes(app);
+
+app.use('*', (req, res) => {
+  res.status(200).sendFile(
+    path.resolve(__dirname, './../public', 'index.html')
+  );
 });
 
 const port = parseInt(process.env.PORT, 10) || 5000;
