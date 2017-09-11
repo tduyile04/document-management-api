@@ -5,7 +5,7 @@ import bcrypt from 'bcrypt';
 import server from '../../app';
 import Constants from '../../server/constants/Constants';
 import models from '../../server/models';
-import Faker from '../utils/faker';
+import Faker from '../utils/Faker';
 
 const User = models.User;
 const Role = models.Roles;
@@ -202,7 +202,7 @@ describe('Users integration tests for the user endpoint', () => {
     });
     it('should not be able to get a particular user, if user has a regular role', (done) => {
       chai.request(server)
-      .get('/api/v1/users/1')
+      .get('/api/v1/users/10')
       .set('x-access-token', randomToken)
       .end((err, res) => {
         res.should.have.status(403);
@@ -210,16 +210,23 @@ describe('Users integration tests for the user endpoint', () => {
         done();
       });
     });
+    it('should be able to get its own profile, if the user has a regular role', (done) => {
+      chai.request(server)
+      .get('/api/v1/users/1')
+      .set('x-access-token', randomToken)
+      .end((err, res) => {
+        res.should.have.status(200);
+        res.body.should.have.property('name').eql('random user');
+        res.body.should.have.property('email').eql('randomuser@random.com');
+        res.body.should.have.property('roleId').eql(1);
+        done();
+      });
+    });
     it('should not have access to update roles, if user has a regular role', (done) => {
       chai.request(server)
       .put('/api/v1/users/1')
       .set('x-access-token', randomToken)
-      .send({
-        name: 'telling',
-        email: 'telling@tells.com',
-        password: 'telling',
-        roleId: Constants.ADMIN
-      })
+      .send(Faker.tellingAdmin)
       .end((err, res) => {
         res.should.have.status(403);
         res.body.message.should.be.eql('Only a superadmin can change user roles');
@@ -230,13 +237,9 @@ describe('Users integration tests for the user endpoint', () => {
       chai.request(server)
       .put('/api/v1/users/1')
       .set('x-access-token', randomToken)
-      .send({
-        name: '',
-        email: '',
-        password: 'telling',
-      })
+      .send(Faker.emptyTelling)
       .end((err, res) => {
-        res.should.have.status(422);
+        res.should.have.status(400);
         res.body.message.should.be.eql('Empty fields not allowed, fill them');
         done();
       });
@@ -292,11 +295,7 @@ describe('Users integration tests for the user endpoint', () => {
       chai.request(server)
       .put('/api/v1/users/1')
       .set('x-access-token', adminToken)
-      .send({
-        name: 'newsuperadmin',
-        email: 'newsuperadmin@random.com',
-        password: 'newsuperadmin'
-      })
+      .send(Faker.adminDataUpdate)
       .end((err, res) => {
         res.should.have.status(200);
         res.body.should.be.a('object');

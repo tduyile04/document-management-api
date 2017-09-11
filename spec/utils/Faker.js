@@ -74,6 +74,27 @@ const Faker = {
     content: 'The details of the new red book',
     access: 'private'
   },
+  tellingAdmin: {
+    name: 'telling',
+    email: 'telling@tells.com',
+    password: 'telling',
+    roleId: Constants.ADMIN
+  },
+  emptyTelling: {
+    name: '',
+    email: '',
+    password: 'telling',
+  },
+  adminDataUpdate: {
+    name: 'newsuperadmin',
+    email: 'newsuperadmin@random.com',
+    password: 'newsuperadmin'
+  },
+  redBook: {
+    title: 'The new red book',
+    content: 'The details of the new red book',
+    access: 'private'
+  }
 }
 
 export default Faker;

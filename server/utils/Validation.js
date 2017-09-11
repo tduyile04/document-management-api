@@ -115,16 +115,19 @@ export default class Validation {
   /**
    * Checks the validity of each user input supplied during user sign up
    * @static
-   * @param {string} _name the name supplied by the user
-   * @param {string} _email the email suplied by the user
-   * @param {string} _password the password supplied by the user
+   * @param {string} newName the name supplied by the user
+   * @param {string} newEmail the email suplied by the user
+   * @param {string} newPassword the password supplied by the user
    * @returns {object} validated and formatted output
    * @memberof Validation
    */
-  static validateSignUp(_name, _email, _password) {
-    const name = !Validation.isEmpty(_name) ? Validation.trim(_name) : false;
-    const email = Validation.checkEmailValidityOf(_email) ? _email : false;
-    const password = !Validation.isEmpty(_password) ? _password : false;
+  static validateSignUp(newName, newEmail, newPassword) {
+    const name = !Validation.isEmpty(newName) ?
+      Validation.trim(newName) : false;
+    const email = Validation.checkEmailValidityOf(newEmail)
+      ? newEmail : false;
+    const password = !Validation.isEmpty(newPassword)
+      ? newPassword : false;
     const userData = { name, email, password };
     return (name && email && password) ? userData : false;
   }
@@ -132,16 +135,19 @@ export default class Validation {
   /**
    * Checks the validity of each user input supplied during user updates
    * @static
-   * @param {string} _name the name supplied by the user
-   * @param {string} _email the email suplied by the user
-   * @param {string} _password the password supplied by the user
+   * @param {string} newName the name supplied by the user
+   * @param {string} newEmail the email suplied by the user
+   * @param {string} newPassword the password supplied by the user
    * @returns {object} validated and formatted output
    * @memberof Validation
    */
-  static validateUpdateUser(_name, _email, _password) {
-    const name = !Validation.isEmpty(_name) ? Validation.trim(_name) : false;
-    const email = Validation.checkEmailValidityOf(_email) ? _email : false;
-    const password = !Validation.isEmpty(_password) ? _password : false;
+  static validateUpdateUser(newName, newEmail, newPassword) {
+    const name = !Validation.isEmpty(newName)
+      ? Validation.trim(newName) : false;
+    const email = Validation.checkEmailValidityOf(newEmail)
+      ? newEmail : false;
+    const password = !Validation.isEmpty(newPassword)
+      ? newPassword : false;
     const userData = { name, email, password };
     return (name && email && password) ? userData : false;
   }

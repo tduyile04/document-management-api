@@ -98,11 +98,7 @@ describe('Documents integration tests for the documents endpoint', () => {
       })
     })
     it('should create a new document if all user data is valid', (done) => {
-      const document = {
-        title: 'The new red book',
-        content: 'The details of the new red book',
-        access: 'private'
-      };
+      const document = Faker.redBook;
       chai.request(server)
       .post('/api/v1/documents')
       .set('x-access-token', regularToken)

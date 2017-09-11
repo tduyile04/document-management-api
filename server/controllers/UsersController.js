@@ -154,8 +154,10 @@ class UsersController {
    */
   static getUser(req, res) {
     const userDetails = req.decoded;
+    const userId = (userDetails.userId).toString();
     if (userDetails.userRole !== Constants.ADMIN &&
-      userDetails.userRole !== Constants.SUPERADMIN) {
+      userDetails.userRole !== Constants.SUPERADMIN &&
+      userId !== req.params.id) {
       return res.status(403).json({
         message: 'You do not have the permission to perform this action'
       });
@@ -173,13 +175,13 @@ class UsersController {
    */
   static updateUser(req, res) {
     const userDetails = req.decoded;
-    const userId = userDetails.userId;
+    const userId = (userDetails.userId).toString();
     const roleId = userDetails.userRole;
-    if (userId == req.params.id) {
+    if (userId === req.params.id) {
       const validatedUser = Validation
         .validateUpdateUser(req.body.name, req.body.email, req.body.password);
       if (!validatedUser) {
-        return res.status(422).json(
+        return res.status(400).json(
           { message: 'Empty fields not allowed, fill them' }
         );
       }
@@ -299,6 +301,7 @@ class UsersController {
     const userDetails = req.decoded;
     const userEmail = userDetails.userEmail;
     const roleId = userDetails.userRole;
+    const showUsers = [];
     User.findById(req.params.id)
       .then((user) => {
         if (user) {
@@ -312,8 +315,19 @@ class UsersController {
                 model: Document
               }]
             })
-              .then((allUser) => {
-                res.status(200).json(allUser);
+              .then((allUsers) => {
+                allUsers.forEach((uniqueUser) => {
+                  showUsers.push({
+                    id: uniqueUser.id,
+                    name: uniqueUser.name,
+                    email: uniqueUser.email,
+                    roleId: uniqueUser.roleId,
+                    createdAt: uniqueUser.createdAt,
+                    updatedAt: uniqueUser.updatedAt,
+                    Documents: uniqueUser.Documents
+                  });
+                });
+                res.status(200).json(showUsers);
               })
               .catch(() => {
                 res.status(500).json({
@@ -321,12 +335,12 @@ class UsersController {
                 });
               });
           } else {
-            res.status(400).json({
+            res.status(403).json({
               message: 'Requires admin access to view this user document'
             });
           }
         } else {
-          res.status(400).json({
+          res.status(404).json({
             message: 'The user does not exist in the database'
           });
         }

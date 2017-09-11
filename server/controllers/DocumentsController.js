@@ -190,7 +190,7 @@ class DocumentsController {
               res.status(deletedDocument.status).json(deletedDocument.data);
             });
         } else {
-          res.status(400).json({
+          res.status(403).json({
             message: 'You cannot delete another user\'s document'
           });
         }
