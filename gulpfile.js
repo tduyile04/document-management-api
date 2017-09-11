@@ -6,7 +6,7 @@ const nodemon = require('gulp-nodemon');
 const shell = require('gulp-shell');
 const exit = require('gulp-exit');
 
-gulp.task('build', ['build-server', 'build-spec', 'build-app']);
+gulp.task('build', ['build-server', 'build-app', 'build-spec']);
 gulp.task('default', ['build', 'serve', 'watch']);
 gulp.task('tests', ['run-tests', 'coverage']);
 

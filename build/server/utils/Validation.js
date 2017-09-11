@@ -1,0 +1,279 @@
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _validator = require('validator');
+
+var _validator2 = _interopRequireDefault(_validator);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/**
+ * Ensures user entry validation before hitting the database
+ * @export
+ * @class Validation
+ */
+var Validation = function () {
+  function Validation() {
+    _classCallCheck(this, Validation);
+  }
+
+  _createClass(Validation, null, [{
+    key: 'trim',
+
+    /**
+     * Removes whitespaces before and after the value
+     * @static
+     * @param {string} value 
+     * @returns {boolean} true/false
+     * @memberof Validation
+     */
+    value: function trim(value) {
+      if (typeof value !== 'string') {
+        return '';
+      }
+      return _validator2.default.trim(value);
+    }
+    /**
+     * Checks if email input is really a valid email
+     * @static
+     * @param {string} email 
+     * @returns {boolean} true/false
+     * @memberof Validation
+     */
+
+  }, {
+    key: 'isEmail',
+    value: function isEmail(email) {
+      if (typeof email !== 'string') {
+        return '';
+      }
+      return _validator2.default.isEmail(email);
+    }
+    /**
+     * Checks if user input is empty
+     * @static
+     * @param {string} stringValue 
+     * @returns {boolean} true/false
+     * @memberof Validation
+     */
+
+  }, {
+    key: 'isEmpty',
+    value: function isEmpty(stringValue) {
+      return _validator2.default.isEmpty(Validation.trim(stringValue));
+    }
+    /**
+     * Checks if user input is an integer
+     * @static
+     * @param {string} value 
+     * @returns {boolean} true/false
+     * @memberof Validation
+     */
+
+  }, {
+    key: 'isInt',
+    value: function isInt(value) {
+      return _validator2.default.isInt(Validation.trim(value));
+    }
+    /**
+     * Escapes html entities from user inputs, to prevent sql injection
+     * @static
+     * @param {string} input 
+     * @returns {boolean} true/fasle
+     * @memberof Validation
+     */
+
+  }, {
+    key: 'escape',
+    value: function escape(input) {
+      return _validator2.default.escape(Validation.trim(input));
+    }
+    /**
+     * Checks if password supplied is not empty
+     * @static
+     * @param {any} password 
+     * @returns {string} validated and formatted output
+     * @memberof Validation
+     */
+
+  }, {
+    key: 'checkPasswordValidityOf',
+    value: function checkPasswordValidityOf(password) {
+      var processedInput = !Validation.isEmpty(password) ? password : '';
+      return processedInput;
+    }
+    /**
+     * Checks if the data input is not emty and escapes all
+     * html entities in the data
+     * @static
+     * @param {string} input 
+     * @returns {string} validated and formatted output
+     * @memberof Validation
+     */
+
+  }, {
+    key: 'checkDataValidityOf',
+    value: function checkDataValidityOf(input) {
+      var processedInput = !Validation.isEmpty(input) ? Validation.escape(input) : '';
+      return processedInput;
+    }
+    /**
+     * Checks if the email supplied is a valid email
+     * @static
+     * @param {sring} mail 
+     * @returns {string} validated and formatted output
+     * @memberof Validation
+     */
+
+  }, {
+    key: 'checkEmailValidityOf',
+    value: function checkEmailValidityOf(mail) {
+      var email = Validation.isEmail(mail) ? mail : '';
+      return email;
+    }
+    /**
+     * Checks if the string input supplied is number
+     * @static
+     * @param {string} input 
+     * @returns {string} validated and formatted output
+     * @memberof Validation
+     */
+
+  }, {
+    key: 'checkIntegerValidityOf',
+    value: function checkIntegerValidityOf(input) {
+      var processedInput = Validation.isInt(input) ? Validation.escape(input) : '';
+      return processedInput;
+    }
+
+    /**
+     * Checks the validity of each user input supplied during user sign up
+     * @static
+     * @param {string} newName the name supplied by the user
+     * @param {string} newEmail the email suplied by the user
+     * @param {string} newPassword the password supplied by the user
+     * @returns {object} validated and formatted output
+     * @memberof Validation
+     */
+
+  }, {
+    key: 'validateSignUp',
+    value: function validateSignUp(newName, newEmail, newPassword) {
+      var name = !Validation.isEmpty(newName) ? Validation.trim(newName) : false;
+      var email = Validation.checkEmailValidityOf(newEmail) ? newEmail : false;
+      var password = !Validation.isEmpty(newPassword) ? newPassword : false;
+      var userData = { name: name, email: email, password: password };
+      return name && email && password ? userData : false;
+    }
+
+    /**
+     * Checks the validity of each user input supplied during user updates
+     * @static
+     * @param {string} newName the name supplied by the user
+     * @param {string} newEmail the email suplied by the user
+     * @param {string} newPassword the password supplied by the user
+     * @returns {object} validated and formatted output
+     * @memberof Validation
+     */
+
+  }, {
+    key: 'validateUpdateUser',
+    value: function validateUpdateUser(newName, newEmail, newPassword) {
+      var name = !Validation.isEmpty(newName) ? Validation.trim(newName) : false;
+      var email = Validation.checkEmailValidityOf(newEmail) ? newEmail : false;
+      var password = !Validation.isEmpty(newPassword) ? newPassword : false;
+      var userData = { name: name, email: email, password: password };
+      return name && email && password ? userData : false;
+    }
+
+    /**
+     * Checks and gives the appropriate response for the null data
+     * supplied by the user
+     * @static
+     * @param {string} name the name supplied by the user
+     * @param {string} email the email suplied by the user
+     * @param {string} password the password supplied by the user
+     * @returns {string} error message
+     * @memberof Validation
+     */
+
+  }, {
+    key: 'checkSignupValidity',
+    value: function checkSignupValidity(name, email, password) {
+      var errorMessage = [];
+      if (!email) {
+        errorMessage.push('Email cannot be empty');
+      }
+      if (!Validation.checkEmailValidityOf(email)) {
+        errorMessage.push('Email is invalid');
+      }
+      if (!password) {
+        errorMessage.push('Password cannot be empty');
+      }
+      if (!name) {
+        errorMessage.push('Name field cannot be empty');
+      }
+      return errorMessage;
+    }
+
+    /**
+     * Checks and gives the appropriate response for the null data
+     * supplied by the user
+     * @static
+     * @param {string} email the email suplied by the user
+     * @param {string} password the password supplied by the user
+     * @returns {string} error message
+     * @memberof Validation
+     */
+
+  }, {
+    key: 'checkLogInValidity',
+    value: function checkLogInValidity(email, password) {
+      var errorMessage = [];
+      if (!email) {
+        errorMessage.push('Email cannot be empty');
+      }
+      if (!Validation.checkEmailValidityOf(email)) {
+        errorMessage.push('Email is invalid');
+      }
+      if (!password) {
+        errorMessage.push('Password cannot be empty');
+      }
+      return errorMessage;
+    }
+
+    /**
+     * Checks and gives the appropriate response for the null data supplied
+     * for the document entry
+     * @static
+     * @param {any} title the title supplied by the user
+     * @param {any} content the content supplied by the user
+     * @returns {string} error message
+     * @memberof Validation
+     */
+
+  }, {
+    key: 'checkCreateDocumentValidity',
+    value: function checkCreateDocumentValidity(title, content) {
+      var errorMessage = [];
+      if (!title) {
+        errorMessage.push('Document title cannot be empty');
+      }
+      if (!content) {
+        errorMessage.push('Document content cannot be empty');
+      }
+      return errorMessage;
+    }
+  }]);
+
+  return Validation;
+}();
+
+exports.default = Validation;

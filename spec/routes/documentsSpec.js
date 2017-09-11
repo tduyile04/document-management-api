@@ -6,7 +6,7 @@ import localStorage from 'local-storage';
 import server from '../../app';
 import Constants from '../../server/constants/Constants';
 import models from '../../server/models';
-import Faker from '../utils/faker';
+import Faker from '../utils/Faker';
 
 const User = models.User;
 const Role = models.Roles;
